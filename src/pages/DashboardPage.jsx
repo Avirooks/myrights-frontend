@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Card from '../components/Card'
 import Button from '../components/Button'
@@ -17,9 +18,9 @@ function DashboardPage() {
       <Navbar
         title="MyRights"
         links={[
-          { label: 'בית', href: '#' },
-          { label: 'שאלון', href: '#' },
-          { label: 'Dashboard', href: '#' },
+          { label: 'בית', href: '/' },
+          { label: 'שאלון', href: '/questionnaire' },
+          { label: 'Dashboard', href: '/dashboard' },
         ]}
       />
 
@@ -82,7 +83,9 @@ function DashboardPage() {
                 </div>
 
                 <div style={{ marginTop: 'var(--spacing-md)', display: 'flex', justifyContent: 'flex-start' }}>
-                  <Button type="button">לפרטים נוספים</Button>
+                  <Link to={`/right/${right.id}`} style={{ textDecoration: 'none' }}>
+                    <Button type="button">לפרטים נוספים</Button>
+                  </Link>
                 </div>
               </div>
             </Card>

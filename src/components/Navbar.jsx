@@ -1,3 +1,5 @@
+import { NavLink } from 'react-router-dom'
+
 function Navbar({ title = 'MyRights', links = [] }) {
   return (
     <header className="container" style={{ padding: 'var(--spacing-lg) 0' }}>
@@ -22,15 +24,16 @@ function Navbar({ title = 'MyRights', links = [] }) {
             >
               {links.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    style={{
-                      color: 'var(--color-text)',
+                  <NavLink
+                    to={link.href}
+                    style={({ isActive }) => ({
+                      color: isActive ? 'var(--color-primary)' : 'var(--color-text)',
                       fontSize: 'var(--font-size-base)',
-                    }}
+                      textDecoration: isActive ? 'underline' : 'none',
+                    })}
                   >
                     {link.label}
-                  </a>
+                  </NavLink>
                 </li>
               ))}
             </ul>

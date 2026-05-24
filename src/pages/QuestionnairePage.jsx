@@ -8,9 +8,9 @@ function QuestionnairePage() {
       <Navbar
         title="MyRights"
         links={[
-          { label: 'בית', href: '#' },
-          { label: 'שאלון', href: '#' },
-          { label: 'Dashboard', href: '#' },
+          { label: 'בית', href: '/' },
+          { label: 'שאלון', href: '/questionnaire' },
+          { label: 'Dashboard', href: '/dashboard' },
         ]}
       />
 

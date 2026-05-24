@@ -1,3 +1,4 @@
+import { Link, useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Card from '../components/Card'
 import Button from '../components/Button'
@@ -11,46 +12,49 @@ function getBadgeVariant(progressStatus) {
 }
 
 function RightDetailsPage() {
-  const right = rightsData[0]
+  const { id } = useParams()
+  const right = rightsData.find((item) => item.id === id)
 
   return (
     <div>
       <Navbar
         title="MyRights"
         links={[
-          { label: 'בית', href: '#' },
-          { label: 'שאלון', href: '#' },
-          { label: 'Dashboard', href: '#' },
+          { label: 'בית', href: '/' },
+          { label: 'שאלון', href: '/questionnaire' },
+          { label: 'Dashboard', href: '/dashboard' },
         ]}
       />
 
       <main className="container" style={{ padding: 'var(--spacing-xl) 0' }}>
-        <section style={{ textAlign: 'right', color: 'var(--color-text)', marginBottom: 'var(--spacing-xl)' }}>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: '2rem',
-              lineHeight: 1.2,
-              marginBottom: 'var(--spacing-md)',
-            }}
-          >
-            {right.title}
-          </h1>
-          <p
-            style={{
-              margin: 0,
-              fontSize: 'var(--font-size-base)',
-              color: '#5F6B72',
-            }}
-          >
-            {right.shortDescription}
-          </p>
-        </section>
+        {right ? (
+          <>
+            <section style={{ textAlign: 'right', color: 'var(--color-text)', marginBottom: 'var(--spacing-xl)' }}>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: '2rem',
+                  lineHeight: 1.2,
+                  marginBottom: 'var(--spacing-md)',
+                }}
+              >
+                {right.title}
+              </h1>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 'var(--font-size-base)',
+                  color: '#5F6B72',
+                }}
+              >
+                {right.shortDescription}
+              </p>
+            </section>
 
-        <div style={{ display: 'grid', gap: 'var(--spacing-lg)', maxWidth: '800px' }}>
-          <Card>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)', textAlign: 'right' }}>
-              <div style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
+            <div style={{ display: 'grid', gap: 'var(--spacing-lg)', maxWidth: '800px' }}>
+              <Card>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)', textAlign: 'right' }}>
+                  <div style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
                 {right.eligibilityStatus && (
                   <div>
                     <p style={{ margin: 0, fontSize: '0.9rem', color: '#5F6B72', fontWeight: 600 }}>סטטוס זכאות</p>
@@ -135,9 +139,25 @@ function RightDetailsPage() {
           </Card>
 
           <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 'var(--spacing-md)' }}>
-            <Button>חזרה לרשימת הזכויות</Button>
+            <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+              <Button>חזרה לרשימת הזכויות</Button>
+            </Link>
           </div>
         </div>
+      </>
+    ) : (
+      <div style={{ maxWidth: '800px', marginTop: 'var(--spacing-lg)', textAlign: 'right', color: 'var(--color-text)' }}>
+        <p style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>הזכות לא נמצאה</p>
+        <p style={{ marginTop: 'var(--spacing-sm)', color: '#5F6B72' }}>
+          נא חזור לרשימת הזכויות ובחר זכות אחרת.
+        </p>
+        <div style={{ marginTop: 'var(--spacing-lg)' }}>
+          <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+            <Button>חזרה לרשימת הזכויות</Button>
+          </Link>
+        </div>
+      </div>
+    )}
       </main>
     </div>
   )
