@@ -1,4 +1,4 @@
-function RightsChecklist() {
+function RightsChecklist({ id, variant = 'desktop' }) {
   const completedItems = [
     { title: 'הנחה בתחבורה ציבורית', status: 'בוצע' },
   ]
@@ -12,16 +12,23 @@ function RightsChecklist() {
     { title: 'קצבת אזרח ותיק', status: 'רלוונטי בעוד שנה' },
   ]
 
+  const isMobile = variant === 'mobile'
+
   return (
     <aside
+      id={id}
+      className={`rights-checklist ${isMobile ? 'mobile' : 'desktop'}`}
       style={{
+        width: '100%',
+        maxWidth: '100%',
         backgroundColor: 'var(--color-surface)',
         border: '1px solid var(--color-border)',
         borderRadius: 'var(--radius)',
         padding: 'var(--spacing-lg)',
         boxShadow: 'var(--shadow-soft)',
-        position: 'sticky',
-        top: 'var(--spacing-lg)',
+        position: isMobile ? 'static' : 'sticky',
+        top: isMobile ? 'auto' : 'var(--spacing-lg)',
+        boxSizing: 'border-box',
       }}
     >
       <h2
@@ -36,6 +43,7 @@ function RightsChecklist() {
       >
         צ׳קליסט מימוש זכויות
       </h2>
+
       <p
         style={{
           margin: 0,
@@ -50,7 +58,6 @@ function RightsChecklist() {
       </p>
 
       <div style={{ display: 'grid', gap: 'var(--spacing-lg)' }}>
-        {/* בוצע */}
         <div>
           <h3
             style={{
@@ -64,6 +71,7 @@ function RightsChecklist() {
           >
             ✓ בוצע
           </h3>
+
           <ul
             style={{
               margin: 0,
@@ -85,13 +93,15 @@ function RightsChecklist() {
                   color: 'var(--color-text)',
                 }}
               >
-                {item.title}
+                <div>{item.title}</div>
+                <div style={{ fontSize: '0.85rem', color: '#5F6B72', marginTop: '0.25rem' }}>
+                  {item.status}
+                </div>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* לביצוע */}
         <div>
           <h3
             style={{
@@ -105,6 +115,7 @@ function RightsChecklist() {
           >
             ⚠ לביצוע
           </h3>
+
           <ul
             style={{
               margin: 0,
@@ -135,7 +146,6 @@ function RightsChecklist() {
           </ul>
         </div>
 
-        {/* זכויות קרובות */}
         <div>
           <h3
             style={{
@@ -149,6 +159,7 @@ function RightsChecklist() {
           >
             📅 זכויות קרובות למימוש
           </h3>
+
           <ul
             style={{
               margin: 0,

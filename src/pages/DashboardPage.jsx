@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Card from '../components/Card'
 import Button from '../components/Button'
@@ -13,6 +14,7 @@ function getBadgeVariant(progressStatus) {
 }
 
 function DashboardPage() {
+  const [checklistOpen, setChecklistOpen] = useState(false)
   return (
     <div>
       <Navbar
@@ -50,14 +52,22 @@ function DashboardPage() {
         </section>
 
         {/* בעתיד הצ׳קליסט יתעדכן לפי הנתונים שהמשתמש ימלא בשאלון. */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1fr) 320px',
-            gap: 'var(--spacing-lg)',
-            alignItems: 'start',
-          }}
-        >
+        <div className="dashboard-layout">
+        
+          {/* Mobile toggle button - visible only on small screens via CSS */}
+          <div className="mobile-checklist-toggle" style={{ width: '100%' }}>
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => setChecklistOpen((s) => !s)}
+              aria-expanded={checklistOpen}
+              aria-controls="mobile-checklist"
+              style={{ width: '100%', textAlign: 'center' }}
+            >
+              צ׳קליסט מימוש זכויות
+            </button>
+          </div>
+
           <section
             style={{
               display: 'grid',
@@ -92,7 +102,15 @@ function DashboardPage() {
           ))}
           </section>
 
-          <RightsChecklist />
+          <div className="desktop-checklist">
+  <RightsChecklist />
+</div>
+
+{checklistOpen && (
+  <div id="mobile-checklist" className="mobile-checklist">
+    <RightsChecklist id="mobile-checklist-content" variant="mobile" />
+  </div>
+)}
         </div>
       </main>
     </div>
