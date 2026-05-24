@@ -1,7 +1,7 @@
-import DashboardPage from './pages/DashboardPage'
+import RightDetailsPage from './pages/RightDetailsPage'
 
 function App() {
-  return <DashboardPage />
+  return <RightDetailsPage />
 }
 
 export default App
