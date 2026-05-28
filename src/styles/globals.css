@@ -369,7 +369,7 @@ label {
 .navbar-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--spacing-lg);
   padding: clamp(0.75rem, 2%, 1rem) 0;
   flex-wrap: wrap;
@@ -589,13 +589,150 @@ label {
   line-height: 1.6;
   max-width: 600px;
 }
-/* Small fix: keep slogan directly under MyRights */
+/* Navbar layout: left (accessibility) → center (nav) → right (brand) */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  order: -1; /* place actions (left) first */
+}
+
+.navbar-center {
+  order: 0;
+  flex: 1 1 auto;
+  text-align: center;
+}
+
 .navbar-brand {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
   text-align: right;
+  order: 1; /* place brand (right) last */
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+}
+
+.accessibility {
+  position: relative;
+  z-index: 0; /* keep stacking context local */
+}
+
+.accessibility-btn {
+  background: transparent;
+  color: var(--color-primary-dark);
+  border: 1px solid var(--color-border);
+  padding: 6px 10px;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.accessibility-btn:hover {
+  background: var(--color-secondary);
+}
+
+.accessibility-menu {
+  position: absolute;
+  left: 0;
+  right: auto;
+  top: calc(100% + 8px);
+  min-width: 210px;
+  max-width: 220px;
+  background: #fff;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 24px rgba(38,50,56,0.14);
+  border-radius: 8px;
+  display: none;
+  flex-direction: column;
+  padding: 4px;
+  z-index: 9999;
+  overflow: visible;
+  white-space: nowrap;
+  outline: none;
+}
+
+.accessibility-menu:focus {
+  outline: none;
+}
+
+.accessibility-menu.open {
+  display: flex;
+}
+
+.accessibility-item {
+  background: transparent;
+  border: none;
+  text-align: right;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  cursor: pointer;
+  width: 100%;
+  white-space: normal;
+  text-wrap: wrap;
+  line-height: 1.4;
+}
+
+.accessibility-item:hover {
+  background: var(--color-secondary);
+}
+
+.accessibility-item.reset {
+  border-top: 1px dashed var(--color-border);
+  margin-top: 6px;
+}
+
+/* Accessibility utility classes applied to body */
+body.accessibility-text-large {
+  font-size: 17px;
+}
+
+body.accessibility-text-small {
+  font-size: 15px;
+}
+
+body.accessibility-high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+body.accessibility-high-contrast a { color: #ffd54f !important }
+
+body.accessibility-grayscale {
+  filter: grayscale(100%);
+}
+
+body.accessibility-highlight-links a {
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+  background: rgba(255,235,59,0.06);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Mobile safety: ensure menu does not cause overflow */
+@media (max-width: 480px) {
+  .accessibility-menu {
+    left: 0;
+    right: auto;
+    min-width: 200px;
+    max-width: 200px;
+    top: calc(100% + 6px);
+    box-shadow: 0 6px 18px rgba(38,50,56,0.12);
+  }
+
+  .accessibility-btn {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
 }
 
 .navbar-brand h1 {
