@@ -1681,4 +1681,677 @@ body.accessibility-highlight-links a {
 .city-line {
   height: 110px !important;
   opacity: 0.18 !important;
+}/* Dashboard page visual alignment with Home page */
+.dashboard-hero {
+  background: #f4f7fa;
+  border-bottom: 1px solid var(--color-border);
+  padding: 34px 0 28px;
+}
+
+.dashboard-hero-content {
+  text-align: right;
+}
+
+.dashboard-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  background: #ffffff;
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(21, 45, 71, 0.08);
+}
+
+.dashboard-back-btn:hover {
+  background: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.dashboard-hero h1 {
+  margin: 0 0 12px;
+  color: var(--color-primary);
+  font-size: clamp(1.8rem, 2.6vw, 2.35rem);
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-hero p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--color-text-light);
+  font-size: clamp(0.95rem, 1.25vw, 1.05rem);
+  line-height: 1.65;
+}
+
+.dashboard-main-section {
+  padding: 32px 0;
+  background: var(--color-bg);
+}
+
+.dashboard-rights-list {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+.dashboard-right-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  text-align: right;
+}
+
+.dashboard-right-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.dashboard-right-title {
+  flex: 1;
+  min-width: 220px;
+}
+
+.dashboard-right-title h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.dashboard-right-title p {
+  margin: var(--spacing-xs) 0 0;
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.dashboard-right-info {
+  display: grid;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-secondary);
+  border-radius: var(--radius);
+  border: 1px solid rgba(30, 78, 121, 0.08);
+}
+
+.dashboard-right-info span {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.dashboard-right-info strong {
+  display: block;
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.dashboard-right-info p {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.dashboard-card-actions {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: var(--spacing-xs);
+}
+
+.dashboard-card-actions a {
+  text-decoration: none;
+}
+
+.mobile-checklist-toggle {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .dashboard-hero {
+    padding: 24px 0 22px;
+  }
+
+  .dashboard-back-btn {
+    margin-bottom: 14px;
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+
+  .dashboard-hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .dashboard-main-section {
+    padding: 24px 0;
+  }
+
+  .dashboard-right-header {
+    gap: var(--spacing-sm);
+  }
+
+  .dashboard-card-actions {
+    justify-content: stretch;
+  }
+
+  .dashboard-card-actions a,
+  .dashboard-card-actions button {
+    width: 100%;
+  }
+}/* Dashboard rights cards refinement */
+.dashboard-rights-list .card {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid #dbe6ef;
+  box-shadow: 0 10px 26px rgba(21, 45, 71, 0.07);
+  background: #ffffff;
+}
+
+.dashboard-right-card {
+  padding: 26px 30px;
+}
+
+.dashboard-right-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.dashboard-right-title h2 {
+  color: var(--color-primary-dark);
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.dashboard-right-title p {
+  color: var(--color-text-light);
+  font-size: 0.98rem;
+  line-height: 1.65;
+  margin-top: 6px;
+}
+
+.dashboard-right-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  background: #eaf4fb;
+  border: 1px solid #d5e5f0;
+  border-radius: 16px;
+  padding: 20px 22px;
+}
+
+.dashboard-right-info div {
+  min-width: 0;
+}
+
+.dashboard-right-info span {
+  display: block;
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.dashboard-right-info strong {
+  display: block;
+  color: var(--color-primary-dark);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.dashboard-right-info p {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.dashboard-card-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 22px;
+}
+
+.dashboard-card-actions button {
+  min-width: 150px;
+  border-radius: 14px;
+  padding: 12px 22px;
+  font-weight: 800;
+}
+
+/* Status badge inside dashboard cards */
+.dashboard-right-header .status-badge {
+  align-self: flex-start;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 800;
+}
+
+/* Mobile dashboard cards */
+@media (max-width: 768px) {
+  .dashboard-right-card {
+    padding: 20px 18px;
+  }
+
+  .dashboard-right-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .dashboard-right-header .status-badge {
+    align-self: flex-start;
+  }
+
+  .dashboard-right-info {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .dashboard-card-actions {
+    justify-content: stretch;
+  }
+
+  .dashboard-card-actions a,
+  .dashboard-card-actions button {
+    width: 100%;
+  }
+}/* Compact dashboard rights cards */
+.dashboard-main-section {
+  padding: 20px 0 !important;
+}
+
+.dashboard-rights-list {
+  gap: 14px !important;
+}
+
+.dashboard-rights-list .card {
+  border-radius: 14px !important;
+}
+
+.dashboard-right-card {
+  padding: 16px 20px !important;
+  gap: 12px !important;
+}
+
+.dashboard-right-header {
+  margin-bottom: 8px !important;
+  gap: 12px !important;
+}
+
+.dashboard-right-title h2 {
+  font-size: 1.05rem !important;
+  line-height: 1.25 !important;
+}
+
+.dashboard-right-title p {
+  font-size: 0.88rem !important;
+  line-height: 1.45 !important;
+  margin-top: 4px !important;
+}
+
+.dashboard-right-info {
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 12px !important;
+  padding: 12px 14px !important;
+  border-radius: 12px !important;
+}
+
+.dashboard-right-info span {
+  font-size: 0.78rem !important;
+  margin-bottom: 4px !important;
+}
+
+.dashboard-right-info strong,
+.dashboard-right-info p {
+  font-size: 0.9rem !important;
+  line-height: 1.35 !important;
+}
+
+.dashboard-card-actions {
+  margin-top: 10px !important;
+  padding-top: 0 !important;
+}
+
+.dashboard-card-actions button {
+  min-width: 130px !important;
+  padding: 9px 16px !important;
+  border-radius: 12px !important;
+  font-size: 0.9rem !important;
+}
+
+.dashboard-right-header .status-badge {
+  padding: 6px 12px !important;
+  font-size: 0.8rem !important;
+}
+
+/* Make dashboard top title area smaller too */
+.dashboard-hero {
+  padding: 20px 0 18px !important;
+}
+
+.dashboard-back-btn {
+  margin-bottom: 10px !important;
+  padding: 6px 14px !important;
+  font-size: 0.82rem !important;
+}
+
+.dashboard-hero h1 {
+  font-size: clamp(1.45rem, 2vw, 1.9rem) !important;
+  margin-bottom: 8px !important;
+}
+
+.dashboard-hero p {
+  font-size: 0.92rem !important;
+  line-height: 1.45 !important;
+}
+
+/* Mobile compact cards */
+@media (max-width: 768px) {
+  .dashboard-main-section {
+    padding: 16px 0 !important;
+  }
+
+  .dashboard-right-card {
+    padding: 14px 14px !important;
+  }
+
+  .dashboard-right-info {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  .dashboard-card-actions button {
+    width: 100% !important;
+  }
+}/* Dashboard rights grid layout - 2 cards per row */
+@media (min-width: 900px) {
+  .dashboard-layout {
+    grid-template-columns: minmax(0, 1fr) 300px !important;
+    gap: 20px !important;
+  }
+
+  .dashboard-rights-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+
+  .dashboard-right-card {
+    min-height: 100% !important;
+    padding: 16px 18px !important;
+  }
+
+  .dashboard-right-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .dashboard-right-title h2 {
+    font-size: 1rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .dashboard-right-title p {
+    font-size: 0.85rem !important;
+    line-height: 1.45 !important;
+  }
+
+  .dashboard-right-info {
+    grid-template-columns: 1fr !important;
+    gap: 9px !important;
+    padding: 12px !important;
+  }
+
+  .dashboard-right-info span {
+    font-size: 0.75rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .dashboard-right-info strong,
+  .dashboard-right-info p {
+    font-size: 0.85rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .dashboard-card-actions {
+    margin-top: 10px !important;
+  }
+
+  .dashboard-card-actions a,
+  .dashboard-card-actions button {
+    width: 100% !important;
+  }
+
+  .dashboard-card-actions button {
+    padding: 8px 14px !important;
+    font-size: 0.85rem !important;
+  }
+}/* Dashboard unified typography */
+.dashboard-hero,
+.dashboard-hero *,
+.dashboard-main-section,
+.dashboard-main-section *,
+.dashboard-layout,
+.dashboard-layout *,
+.dashboard-rights-list,
+.dashboard-rights-list *,
+.desktop-checklist,
+.desktop-checklist *,
+.mobile-checklist,
+.mobile-checklist * {
+  font-family: var(--font-family) !important;
+}
+
+.dashboard-hero h1,
+.dashboard-right-title h2,
+.dashboard-right-info strong,
+.dashboard-right-info p,
+.dashboard-right-info span,
+.dashboard-card-actions button,
+.dashboard-back-btn,
+.status-badge {
+  letter-spacing: 0 !important;
+}
+
+.dashboard-hero h1 {
+  font-weight: 800 !important;
+}
+
+.dashboard-right-title h2 {
+  font-weight: 800 !important;
+  font-size: 1.05rem !important;
+  line-height: 1.35 !important;
+}
+
+.dashboard-right-title p {
+  font-weight: 400 !important;
+  font-size: 0.92rem !important;
+  line-height: 1.55 !important;
+}
+
+.dashboard-right-info span {
+  font-weight: 700 !important;
+}
+
+.dashboard-right-info strong {
+  font-weight: 800 !important;
+}
+
+.dashboard-right-info p {
+  font-weight: 400 !important;
+}
+
+.dashboard-card-actions button,
+.dashboard-back-btn {
+  font-weight: 800 !important;
+}
+
+.status-badge {
+  font-weight: 800 !important;
+}/* Global typography unification - apply one font to the whole app */
+html,
+body,
+#root,
+#root *,
+#root *::before,
+#root *::after {
+  font-family: 'Assistant', Arial, sans-serif !important;
+}
+
+/* Make form controls and buttons inherit the same font */
+button,
+input,
+textarea,
+select,
+option {
+  font-family: 'Assistant', Arial, sans-serif !important;
+}
+
+/* Navbar typography unification */
+.navbar,
+.navbar *,
+.navbar-brand,
+.navbar-brand h1,
+.navbar-slogan,
+.navbar-link,
+.accessibility-btn,
+.accessibility-menu,
+.accessibility-item,
+.language-inline,
+.language-inline-btn {
+  font-family: 'Assistant', Arial, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+
+/* Keep navbar visually consistent */
+.navbar-brand h1 {
+  font-weight: 800 !important;
+}
+
+.navbar-slogan {
+  font-weight: 500 !important;
+}
+
+.navbar-link {
+  font-weight: 700 !important;
+}
+
+.accessibility-btn,
+.language-inline-btn {
+  font-weight: 700 !important;
+}
+
+/* Dashboard typography unification */
+.dashboard-hero,
+.dashboard-hero *,
+.dashboard-main-section,
+.dashboard-main-section *,
+.dashboard-layout,
+.dashboard-layout *,
+.dashboard-rights-list,
+.dashboard-rights-list *,
+.dashboard-right-card,
+.dashboard-right-card *,
+.desktop-checklist,
+.desktop-checklist *,
+.mobile-checklist,
+.mobile-checklist *,
+.rights-checklist,
+.rights-checklist *,
+.status-badge {
+  font-family: 'Assistant', Arial, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+
+/* Dashboard title hierarchy */
+.dashboard-hero h1 {
+  font-weight: 800 !important;
+}
+
+.dashboard-hero p {
+  font-weight: 400 !important;
+}
+
+.dashboard-right-title h2 {
+  font-weight: 800 !important;
+}
+
+.dashboard-right-title p {
+  font-weight: 400 !important;
+}
+
+.dashboard-right-info span {
+  font-weight: 700 !important;
+}
+
+.dashboard-right-info strong {
+  font-weight: 800 !important;
+}
+
+.dashboard-right-info p {
+  font-weight: 400 !important;
+}
+
+/* Checklist typography */
+.rights-checklist h1,
+.rights-checklist h2,
+.rights-checklist h3,
+.rights-checklist h4,
+.desktop-checklist h1,
+.desktop-checklist h2,
+.desktop-checklist h3,
+.desktop-checklist h4,
+.mobile-checklist h1,
+.mobile-checklist h2,
+.mobile-checklist h3,
+.mobile-checklist h4 {
+  font-family: 'Assistant', Arial, sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+}
+
+.rights-checklist p,
+.rights-checklist span,
+.rights-checklist li,
+.rights-checklist label,
+.desktop-checklist p,
+.desktop-checklist span,
+.desktop-checklist li,
+.desktop-checklist label,
+.mobile-checklist p,
+.mobile-checklist span,
+.mobile-checklist li,
+.mobile-checklist label {
+  font-family: 'Assistant', Arial, sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+}
+
+/* Buttons across the site */
+button,
+.primary,
+.secondary,
+.dashboard-card-actions button,
+.dashboard-back-btn {
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
 }

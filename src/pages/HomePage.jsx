@@ -92,7 +92,7 @@ function HomePage() {
               onClick={() => navigate('/questionnaire')}
               className="home-hero-cta"
             >
-              התחלת בדיקת זכויות
+              התחלת בדיקת זכויות אישית
             </Button>
           </div>
         </section>
