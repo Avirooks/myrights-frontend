@@ -10,19 +10,31 @@ function Navbar({ title = 'MyRights', links = [] }) {
   const accessRef = useRef(null)
 
   useEffect(() => {
-    function onDocClick(e) {
+    function onDocClick(event) {
       if (!accessRef.current) return
-      if (!accessRef.current.contains(e.target)) setAccessOpen(false)
+      if (!accessRef.current.contains(event.target)) {
+        setAccessOpen(false)
+      }
     }
+
     document.addEventListener('click', onDocClick)
     return () => document.removeEventListener('click', onDocClick)
   }, [])
+
+  function resetAccessibility() {
+    document.body.classList.remove(
+      'accessibility-text-large',
+      'accessibility-text-small',
+      'accessibility-high-contrast',
+      'accessibility-grayscale',
+      'accessibility-highlight-links'
+    )
+  }
 
   return (
     <header className="navbar">
       <div className="container">
         <div className="navbar-inner">
-          
           <div className="navbar-brand">
             <h1>{title}</h1>
             <p className="navbar-slogan">הדרך הפשוטה לעזור להורים</p>
@@ -48,65 +60,97 @@ function Navbar({ title = 'MyRights', links = [] }) {
           )}
 
           <div className="navbar-actions">
-            <div className="navbar-left">
-              <div className="accessibility">
-                <div ref={accessRef}>
-                <button
-                  className="accessibility-btn"
-                  aria-haspopup="true"
-                  aria-expanded={accessOpen}
-                  aria-controls="accessibility-menu"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setAccessOpen((v) => !v)
-                  }}
-                >
-                  נגישות
-                </button>
+            <div className="accessibility" ref={accessRef}>
+              <button
+                type="button"
+                className="accessibility-btn"
+                aria-haspopup="true"
+                aria-expanded={accessOpen}
+                aria-controls="accessibility-menu"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setAccessOpen((value) => !value)
+                }}
+              >
+                נגישות
+              </button>
 
-                <div
-                  id="accessibility-menu"
-                  className={"accessibility-menu" + (accessOpen ? ' open' : '')}
-                  role="menu"
-                  aria-label="תפריט נגישות"
-                >
-                  <button className="accessibility-item" onClick={() => {
+              <div
+                id="accessibility-menu"
+                className={`accessibility-menu ${accessOpen ? 'open' : ''}`}
+                role="menu"
+                aria-label="תפריט נגישות"
+              >
+                <button
+                  type="button"
+                  className="accessibility-item"
+                  onClick={() => {
                     document.body.classList.remove('accessibility-text-small')
                     document.body.classList.add('accessibility-text-large')
                     setAccessOpen(false)
-                  }}>הגדלת טקסט</button>
+                  }}
+                >
+                  הגדלת טקסט
+                </button>
 
-                  <button className="accessibility-item" onClick={() => {
+                <button
+                  type="button"
+                  className="accessibility-item"
+                  onClick={() => {
                     document.body.classList.remove('accessibility-text-large')
                     document.body.classList.add('accessibility-text-small')
                     setAccessOpen(false)
-                  }}>הקטנת טקסט</button>
+                  }}
+                >
+                  הקטנת טקסט
+                </button>
 
-                  <button className="accessibility-item" onClick={() => {
+                <button
+                  type="button"
+                  className="accessibility-item"
+                  onClick={() => {
                     document.body.classList.toggle('accessibility-high-contrast')
                     setAccessOpen(false)
-                  }}>ניגודיות צבעים</button>
+                  }}
+                >
+                  ניגודיות צבעים
+                </button>
 
-                  <button className="accessibility-item" onClick={() => {
+                <button
+                  type="button"
+                  className="accessibility-item"
+                  onClick={() => {
                     document.body.classList.toggle('accessibility-grayscale')
                     setAccessOpen(false)
-                  }}>גווני אפור</button>
+                  }}
+                >
+                  גווני אפור
+                </button>
 
-                  <button className="accessibility-item" onClick={() => {
+                <button
+                  type="button"
+                  className="accessibility-item"
+                  onClick={() => {
                     document.body.classList.toggle('accessibility-highlight-links')
                     setAccessOpen(false)
-                  }}>הדגשת קישורים</button>
+                  }}
+                >
+                  הדגשת קישורים
+                </button>
 
-                  <button className="accessibility-item reset" onClick={() => {
-                    document.body.classList.remove('accessibility-text-large', 'accessibility-text-small', 'accessibility-high-contrast', 'accessibility-grayscale', 'accessibility-highlight-links')
+                <button
+                  type="button"
+                  className="accessibility-item reset"
+                  onClick={() => {
+                    resetAccessibility()
                     setAccessOpen(false)
-                  }}>איפוס הגדרות</button>
-                </div>
-                </div>
+                  }}
+                >
+                  איפוס הגדרות
+                </button>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </header>
