@@ -1,8 +1,16 @@
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Button from '../components/Button'
 import Card from '../components/Card'
 
 function QuestionnairePage() {
+  const navigate = useNavigate()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    navigate('/dashboard')
+  }
+
   return (
     <div>
       <Navbar
@@ -14,14 +22,15 @@ function QuestionnairePage() {
         ]}
       />
 
-      <main className="container" style={{ padding: 'var(--spacing-xl) 0' }}>
-        <section style={{ textAlign: 'right', color: 'var(--color-text)' }}>
+      <main className="container section">
+        <section style={{ textAlign: 'right', color: 'var(--color-text)', marginBottom: 'var(--spacing-lg)' }}>
           <h1
             style={{
               margin: 0,
-              fontSize: '2rem',
+              fontSize: 'var(--font-size-3xl)',
+              fontWeight: 700,
               lineHeight: 1.2,
-              marginBottom: 'var(--spacing-sm)',
+              marginBottom: 'var(--spacing-md)',
             }}
           >
             שאלון בדיקת זכויות
@@ -29,59 +38,155 @@ function QuestionnairePage() {
           <p
             style={{
               margin: 0,
-              marginBottom: 'var(--spacing-xl)',
               fontSize: 'var(--font-size-base)',
               color: '#5F6B72',
               maxWidth: '760px',
+              lineHeight: 1.6,
             }}
           >
             מלאו מספר פרטים בסיסיים על ההורה המבוגר כדי לקבל התאמה ראשונית של זכויות והטבות.
+            כל השדות הם חסויים ומשמשים לחישוב זכויות בלבד.
           </p>
         </section>
 
-        <Card>
-          <form style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
-            <div style={{ display: 'grid', gap: 'var(--spacing-xs)' }}>
-              <label htmlFor="age">גיל ההורה</label>
-              <input id="age" type="number" placeholder="הכנס גיל" />
-            </div>
+        <Card style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 'var(--spacing-lg)' }}>
+            
+            {/* פרטי ההורה */}
+            <section style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: 'var(--spacing-lg)' }}>
+              <h2
+                style={{
+                  margin: 0,
+                  marginBottom: 'var(--spacing-lg)',
+                  fontSize: 'var(--font-size-lg)',
+                  fontWeight: 600,
+                  color: 'var(--color-primary)',
+                }}
+              >
+                פרטי ההורה
+              </h2>
 
-            <div style={{ display: 'grid', gap: 'var(--spacing-xs)' }}>
-              <label htmlFor="family-status">מצב משפחתי</label>
-              <select id="family-status">
-                <option>רווק/ה</option>
-                <option>נשוי/ה</option>
-                <option>גרוש/ה</option>
-                <option>אלמן/ה</option>
-              </select>
-            </div>
+              <div style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
+                <div>
+                  <label htmlFor="age" style={{ fontWeight: 500 }}>
+                    גיל ההורה *
+                  </label>
+                  <input
+                    id="age"
+                    type="number"
+                    min="60"
+                    max="120"
+                    placeholder="הכנס גיל"
+                    required
+                  />
+                </div>
 
-            <div style={{ display: 'grid', gap: 'var(--spacing-xs)' }}>
-              <label htmlFor="senior-pension">האם ההורה מקבל קצבת אזרח ותיק?</label>
-              <select id="senior-pension">
-                <option>כן</option>
-                <option>לא</option>
-              </select>
-            </div>
+                <div>
+                  <label htmlFor="family-status" style={{ fontWeight: 500 }}>
+                    מצב משפחתי *
+                  </label>
+                  <select id="family-status" required>
+                    <option value="">בחר מצב משפחתי</option>
+                    <option value="single">רווק/ה</option>
+                    <option value="married">נשוי/ה</option>
+                    <option value="divorced">גרוש/ה</option>
+                    <option value="widowed">אלמן/ה</option>
+                  </select>
+                </div>
+              </div>
+            </section>
 
-            <div style={{ display: 'grid', gap: 'var(--spacing-xs)' }}>
-              <label htmlFor="daily-help">האם ההורה זקוק לעזרה יומיומית בבית?</label>
-              <select id="daily-help">
-                <option>כן</option>
-                <option>לא</option>
-              </select>
-            </div>
+            {/* מצב כלכלי */}
+            <section style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: 'var(--spacing-lg)' }}>
+              <h2
+                style={{
+                  margin: 0,
+                  marginBottom: 'var(--spacing-lg)',
+                  fontSize: 'var(--font-size-lg)',
+                  fontWeight: 600,
+                  color: 'var(--color-primary)',
+                }}
+              >
+                מצב כלכלי
+              </h2>
 
-            <div style={{ display: 'grid', gap: 'var(--spacing-xs)' }}>
-              <label htmlFor="additional-income">האם יש להורה הכנסה נוספת?</label>
-              <select id="additional-income">
-                <option>כן</option>
-                <option>לא</option>
-              </select>
-            </div>
+              <div style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
+                <div>
+                  <label htmlFor="additional-income" style={{ fontWeight: 500 }}>
+                    האם יש להורה הכנסה נוספת? *
+                  </label>
+                  <select id="additional-income" required>
+                    <option value="">בחר</option>
+                    <option value="yes">כן</option>
+                    <option value="no">לא</option>
+                  </select>
+                </div>
+              </div>
+            </section>
 
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 'var(--spacing-lg)' }}>
-              <Button type="button">הצג זכויות מתאימות</Button>
+            {/* מצב תפקודי */}
+            <section style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: 'var(--spacing-lg)' }}>
+              <h2
+                style={{
+                  margin: 0,
+                  marginBottom: 'var(--spacing-lg)',
+                  fontSize: 'var(--font-size-lg)',
+                  fontWeight: 600,
+                  color: 'var(--color-primary)',
+                }}
+              >
+                מצב תפקודי
+              </h2>
+
+              <div style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
+                <div>
+                  <label htmlFor="daily-help" style={{ fontWeight: 500 }}>
+                    האם ההורה זקוק לעזרה יומיומית בבית? *
+                  </label>
+                  <select id="daily-help" required>
+                    <option value="">בחר</option>
+                    <option value="yes">כן</option>
+                    <option value="no">לא</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            {/* קצבאות קיימות */}
+            <section>
+              <h2
+                style={{
+                  margin: 0,
+                  marginBottom: 'var(--spacing-lg)',
+                  fontSize: 'var(--font-size-lg)',
+                  fontWeight: 600,
+                  color: 'var(--color-primary)',
+                }}
+              >
+                קצבאות קיימות
+              </h2>
+
+              <div style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
+                <div>
+                  <label htmlFor="senior-pension" style={{ fontWeight: 500 }}>
+                    האם ההורה מקבל קצבת אזרח ותיק? *
+                  </label>
+                  <select id="senior-pension" required>
+                    <option value="">בחר</option>
+                    <option value="yes">כן</option>
+                    <option value="no">לא</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-md)', paddingTop: 'var(--spacing-md)' }}>
+              <Button type="button" variant="secondary" onClick={() => navigate('/')}>
+                חזור
+              </Button>
+              <Button type="submit" variant="primary">
+                הצג זכויות מתאימות
+              </Button>
             </div>
           </form>
         </Card>

@@ -1,11 +1,8 @@
-function Card({ title, children, className = '' }) {
+function Card({ title, children, className = '', ...props }) {
   return (
-    <article className={`card ${className}`.trim()}>
+    <article className={`card ${className}`.trim()} {...props}>
       {title && (
-        <h2
-          className="heading-large"
-          style={{ margin: 0, marginBottom: 'var(--spacing-md)' }}
-        >
+        <h2 style={{ margin: 0, marginBottom: 'var(--spacing-md)' }}>
           {title}
         </h2>
       )}
@@ -14,4 +11,4 @@ function Card({ title, children, className = '' }) {
   )
 }
 
-export default Card;
+export default Card

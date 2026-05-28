@@ -7,13 +7,36 @@ import { rightsData } from '../data/rightsData'
 
 function getBadgeVariant(progressStatus) {
   if (progressStatus === 'הושלם') return 'success'
-  if (progressStatus === 'ממתין' || progressStatus === 'לבדיקה') return 'info'
+  if (progressStatus === 'ממתין' || progressStatus === 'לבדיקה') return 'warning'
   return 'info'
 }
 
 function RightDetailsPage() {
   const { id } = useParams()
   const right = rightsData.find((item) => item.id === id)
+
+  if (!right) {
+    return (
+      <div>
+        <Navbar
+          title="MyRights"
+          links={[
+            { label: 'בית', href: '/' },
+            { label: 'שאלון', href: '/questionnaire' },
+            { label: 'Dashboard', href: '/dashboard' },
+          ]}
+        />
+        <main className="container section" style={{ textAlign: 'right' }}>
+          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 700, color: 'var(--color-error)' }}>
+            הזכות לא נמצאה
+          </h1>
+          <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+            <Button variant="primary">חזור לרשימת הזכויות</Button>
+          </Link>
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -26,75 +49,187 @@ function RightDetailsPage() {
         ]}
       />
 
-      <main className="container" style={{ padding: 'var(--spacing-xl) 0' }}>
-        {right ? (
-          <>
-            <section style={{ textAlign: 'right', color: 'var(--color-text)', marginBottom: 'var(--spacing-xl)' }}>
-              <h1
-                style={{
-                  margin: 0,
-                  fontSize: '2rem',
-                  lineHeight: 1.2,
-                  marginBottom: 'var(--spacing-md)',
-                }}
-              >
-                {right.title}
-              </h1>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: 'var(--font-size-base)',
-                  color: '#5F6B72',
-                }}
-              >
-                {right.shortDescription}
-              </p>
-            </section>
+      <main>
+        {/* Hero Section */}
+        <section
+          style={{
+            backgroundColor: 'var(--color-primary)',
+            color: '#FFFFFF',
+            padding: 'var(--spacing-lg) 0',
+            textAlign: 'right',
+          }}
+        >
+          <div className="container">
+            <h1
+              style={{
+                margin: 0,
+                fontSize: 'var(--font-size-3xl)',
+                fontWeight: 700,
+                lineHeight: 1.2,
+                marginBottom: 'var(--spacing-md)',
+              }}
+            >
+              {right.title}
+            </h1>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 'var(--font-size-base)',
+                lineHeight: 1.6,
+                opacity: 0.95,
+              }}
+            >
+              {right.shortDescription}
+            </p>
+          </div>
+        </section>
 
-            <div style={{ display: 'grid', gap: 'var(--spacing-lg)', maxWidth: '800px' }}>
+        {/* Main Content */}
+        <div className="container section">
+          <div style={{ maxWidth: '900px' }}>
+            {/* Status Cards */}
+            <div
+              style={{
+                display: 'grid',
+                gap: 'var(--spacing-md)',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                marginBottom: 'var(--spacing-xl)',
+              }}
+            >
+              {/* Eligibility Status */}
               <Card>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)', textAlign: 'right' }}>
-                  <div style={{ display: 'grid', gap: 'var(--spacing-md)' }}>
-                {right.eligibilityStatus && (
-                  <div>
-                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#5F6B72', fontWeight: 600 }}>סטטוס זכאות</p>
-                    <p style={{ margin: 'var(--spacing-xs) 0 0', fontSize: '1.1rem', color: 'var(--color-text)', fontWeight: 700 }}>
-                      {right.eligibilityStatus}
-                    </p>
-                  </div>
-                )}
+                <div style={{ textAlign: 'right' }}>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 'var(--font-size-sm)',
+                      color: '#5F6B72',
+                      fontWeight: 500,
+                      marginBottom: 'var(--spacing-sm)',
+                    }}
+                  >
+                    סטטוס זכאות
+                  </p>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 'var(--font-size-lg)',
+                      fontWeight: 700,
+                      color: 'var(--color-primary)',
+                    }}
+                  >
+                    {right.eligibilityStatus}
+                  </p>
+                </div>
+              </Card>
 
-                {right.progressStatus && (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 'var(--spacing-md)' }}>
-                    <div style={{ textAlign: 'right' }}>
-                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#5F6B72', fontWeight: 600 }}>סטטוס תהליך</p>
-                      <p style={{ margin: 'var(--spacing-xs) 0 0', fontSize: '1.1rem', color: 'var(--color-text)', fontWeight: 700 }}>
-                        {right.progressStatus}
-                      </p>
-                    </div>
-                    <StatusBadge variant={getBadgeVariant(right.progressStatus)}>{right.progressStatus}</StatusBadge>
+              {/* Progress Status */}
+              <Card>
+                <div style={{ textAlign: 'right' }}>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 'var(--font-size-sm)',
+                      color: '#5F6B72',
+                      fontWeight: 500,
+                      marginBottom: 'var(--spacing-sm)',
+                    }}
+                  >
+                    סטטוס תהליך
+                  </p>
+                  <div style={{ display: 'flex', gap: 'var(--spacing-md)', justifyContent: 'flex-end', alignItems: 'center' }}>
+                    <StatusBadge variant={getBadgeVariant(right.progressStatus)}>
+                      {right.progressStatus}
+                    </StatusBadge>
                   </div>
-                )}
-              </div>
+                </div>
+              </Card>
 
-              <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--spacing-md)' }}>
-                <h2 style={{ margin: 0, fontSize: '1.25rem', marginBottom: 'var(--spacing-md)' }}>תיאור</h2>
-                <p style={{ margin: 0, fontSize: 'var(--font-size-base)', color: '#5F6B72', lineHeight: 1.6 }}>
+              {/* Next Action */}
+              <Card>
+                <div style={{ textAlign: 'right' }}>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 'var(--font-size-sm)',
+                      color: '#5F6B72',
+                      fontWeight: 500,
+                      marginBottom: 'var(--spacing-sm)',
+                    }}
+                  >
+                    צעדים הבאים
+                  </p>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: 'var(--font-size-base)',
+                      fontWeight: 600,
+                      color: 'var(--color-text)',
+                    }}
+                  >
+                    {right.nextAction}
+                  </p>
+                </div>
+              </Card>
+            </div>
+
+            {/* Description Section */}
+            <Card style={{ marginBottom: 'var(--spacing-lg)' }}>
+              <div style={{ textAlign: 'right' }}>
+                <h2
+                  style={{
+                    margin: 0,
+                    marginBottom: 'var(--spacing-md)',
+                    fontSize: 'var(--font-size-lg)',
+                    fontWeight: 600,
+                    color: 'var(--color-primary)',
+                  }}
+                >
+                  תקציר הזכות
+                </h2>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 'var(--font-size-base)',
+                    color: '#5F6B72',
+                    lineHeight: 1.7,
+                  }}
+                >
                   {right.fullDescription}
                 </p>
               </div>
+            </Card>
 
-              <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--spacing-md)' }}>
-                <h2 style={{ margin: 0, fontSize: '1.25rem', marginBottom: 'var(--spacing-md)' }}>צעדים הנדרשים</h2>
-                <ol style={{ margin: 0, paddingRight: 'var(--spacing-lg)', textAlign: 'right' }}>
+            {/* Action Steps Section */}
+            <Card style={{ marginBottom: 'var(--spacing-lg)' }}>
+              <div style={{ textAlign: 'right' }}>
+                <h2
+                  style={{
+                    margin: 0,
+                    marginBottom: 'var(--spacing-lg)',
+                    fontSize: 'var(--font-size-lg)',
+                    fontWeight: 600,
+                    color: 'var(--color-primary)',
+                  }}
+                >
+                  צעדים למימוש
+                </h2>
+                <ol
+                  style={{
+                    margin: 0,
+                    paddingRight: 'var(--spacing-lg)',
+                    display: 'grid',
+                    gap: 'var(--spacing-md)',
+                  }}
+                >
                   {right.actionSteps.map((step, index) => (
                     <li
                       key={index}
                       style={{
-                        marginBottom: 'var(--spacing-sm)',
                         fontSize: 'var(--font-size-base)',
                         color: '#5F6B72',
                         lineHeight: 1.6,
+                        paddingRight: 'var(--spacing-md)',
                       }}
                     >
                       {step}
@@ -102,10 +237,30 @@ function RightDetailsPage() {
                   ))}
                 </ol>
               </div>
+            </Card>
 
-              <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 'var(--spacing-md)' }}>
-                <h2 style={{ margin: 0, fontSize: '1.25rem', marginBottom: 'var(--spacing-md)' }}>מקור רשמי</h2>
-                <p style={{ margin: 0, fontSize: '0.9rem', color: '#5F6B72', marginBottom: 'var(--spacing-md)' }}>
+            {/* Official Source Section */}
+            <Card style={{ marginBottom: 'var(--spacing-xl)', backgroundColor: 'var(--color-secondary)' }}>
+              <div style={{ textAlign: 'right' }}>
+                <h2
+                  style={{
+                    margin: 0,
+                    marginBottom: 'var(--spacing-md)',
+                    fontSize: 'var(--font-size-lg)',
+                    fontWeight: 600,
+                    color: 'var(--color-primary)',
+                  }}
+                >
+                  מקור רשמי
+                </h2>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 'var(--font-size-sm)',
+                    color: '#5F6B72',
+                    marginBottom: 'var(--spacing-md)',
+                  }}
+                >
                   {right.officialSource}
                 </p>
                 {right.officialUrl && (
@@ -113,51 +268,26 @@ function RightDetailsPage() {
                     href={right.officialUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: 'var(--spacing-sm) var(--spacing-lg)',
-                      backgroundColor: 'var(--color-primary)',
-                      color: 'white',
-                      textDecoration: 'none',
-                      borderRadius: 'var(--border-radius)',
-                      fontSize: 'var(--font-size-base)',
-                      fontWeight: 600,
-                      border: 'none',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s',
-                    }}
-                    onMouseEnter={(e) => (e.target.style.backgroundColor = '#163D5F')}
-                    onMouseLeave={(e) => (e.target.style.backgroundColor = 'var(--color-primary)')}
+                    style={{ textDecoration: 'none' }}
                   >
-                    מעבר למקור הרשמי
+                    <Button variant="primary">
+                      עבור לאתר הרשמי ↗
+                    </Button>
                   </a>
                 )}
               </div>
-            </div>
-          </Card>
+            </Card>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 'var(--spacing-md)' }}>
-            <Link to="/dashboard" style={{ textDecoration: 'none' }}>
-              <Button>חזרה לרשימת הזכויות</Button>
-            </Link>
+            {/* Back Navigation */}
+            <div style={{ display: 'flex', gap: 'var(--spacing-md)', justifyContent: 'flex-start' }}>
+              <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                <Button variant="secondary">
+                  ← חזור לרשימת הזכויות
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
-      </>
-    ) : (
-      <div style={{ maxWidth: '800px', marginTop: 'var(--spacing-lg)', textAlign: 'right', color: 'var(--color-text)' }}>
-        <p style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>הזכות לא נמצאה</p>
-        <p style={{ marginTop: 'var(--spacing-sm)', color: '#5F6B72' }}>
-          נא חזור לרשימת הזכויות ובחר זכות אחרת.
-        </p>
-        <div style={{ marginTop: 'var(--spacing-lg)' }}>
-          <Link to="/dashboard" style={{ textDecoration: 'none' }}>
-            <Button>חזרה לרשימת הזכויות</Button>
-          </Link>
-        </div>
-      </div>
-    )}
       </main>
     </div>
   )

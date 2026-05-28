@@ -1,11 +1,10 @@
-function Button({ children, variant = 'primary', type = 'button', className = '', ...props }) {
-  const variantClass = variant === 'secondary' ? 'secondary' : 'primary'
-
+function Button({ children, variant = 'primary', type = 'button', ...props }) {
+  const className = variant === 'secondary' ? 'secondary' : 'primary'
   return (
-    <button type={type} className={`${variantClass} ${className}`.trim()} {...props}>
+    <button type={type} className={className} {...props}>
       {children}
     </button>
   )
 }
 
-export default Button;
+export default Button

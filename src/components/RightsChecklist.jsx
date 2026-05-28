@@ -24,10 +24,9 @@ function RightsChecklist({ id, variant = 'desktop' }) {
         backgroundColor: 'var(--color-surface)',
         border: '1px solid var(--color-border)',
         borderRadius: 'var(--radius)',
-        padding: 'var(--spacing-lg)',
+        padding: 'var(--spacing-md)',
         boxShadow: 'var(--shadow-soft)',
-        position: isMobile ? 'static' : 'sticky',
-        top: isMobile ? 'auto' : 'var(--spacing-lg)',
+        position: 'static',
         boxSizing: 'border-box',
       }}
     >
