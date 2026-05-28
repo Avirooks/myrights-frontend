@@ -36,7 +36,7 @@ function HomePage() {
         links={[
           { label: 'בית', href: '/' },
           { label: 'שאלון', href: '/questionnaire' },
-          { label: 'דשבורד', href: '/dashboard' },
+          { label: 'זכויות מותאמות', href: '/dashboard' }
         ]}
         showCta={false}
       />

@@ -16,7 +16,7 @@ function QuestionnairePage() {
         links={[
           { label: 'בית', href: '/' },
           { label: 'שאלון', href: '/questionnaire' },
-          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'זכויות מותאמות', href: '/dashboard' }
         ]}
       />
 
