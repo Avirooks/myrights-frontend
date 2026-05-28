@@ -60,24 +60,20 @@ function HomePage() {
             >
               התחלת בדיקת זכויות
             </Button>
-
-            <div style={{ maxWidth: '820px', margin: 'var(--spacing-lg) auto 0' }}>
-              <AiHelpBox />
-            </div>
           </div>
         </section>
 
         {/* Features Section */}
         <section className="section">
           <div className="container">
-            <h2 style={{ textAlign: 'center', marginBottom: 'var(--spacing-lg)', fontSize: 'var(--font-size-2xl)', fontWeight: 700 }}>
+            <h2 style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)', fontSize: 'var(--font-size-2xl)', fontWeight: 700 }}>
               איך זה עובד?
             </h2>
             <div className="content-grid">
               {features.map((feature) => (
                 <Card key={feature.title}>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '2rem', marginBottom: 'var(--spacing-md)' }}>
+                    <div style={{ fontSize: '2.5rem', marginBottom: 'var(--spacing-md)' }}>
                       {feature.icon}
                     </div>
                     <h3 style={{ margin: 0, marginBottom: 'var(--spacing-sm)', fontSize: 'var(--font-size-lg)', fontWeight: 600 }}>
@@ -90,6 +86,13 @@ function HomePage() {
                 </Card>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* AI Help Section */}
+        <section className="section">
+          <div className="container" style={{ maxWidth: '800px' }}>
+            <AiHelpBox />
           </div>
         </section>
 
