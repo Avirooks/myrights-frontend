@@ -85,7 +85,7 @@ function Navbar({ title = 'MyRights', links = [] }) {
                     setAccessOpen((value) => !value)
                   }}
                 >
-                  נגישות
+                  תפריט נגישות
                 </button>
 
                 <div
