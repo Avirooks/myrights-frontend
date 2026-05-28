@@ -1228,4 +1228,76 @@ body.accessibility-highlight-links a {
     right: auto !important;
     transform: none !important;
   }
+}/* Inline visual language switcher */
+.navbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.language-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--color-text-light);
+  white-space: nowrap;
+}
+
+.language-inline-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.language-separator {
+  color: var(--color-border);
+  font-size: 12px;
+}
+
+.language-inline-btn {
+  background: transparent;
+  border: 0;
+  color: var(--color-text-light);
+  padding: 2px 3px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+.language-inline-btn:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.language-inline-btn.active {
+  color: var(--color-primary);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+  .navbar-controls {
+    gap: 7px;
+  }
+
+  .language-inline {
+    font-size: 11px;
+    gap: 2px;
+  }
+
+  .language-inline-option {
+    gap: 2px;
+  }
+
+  .language-inline-btn {
+    font-size: 11px;
+    padding: 1px 2px;
+  }
+
+  .language-separator {
+    font-size: 10px;
+  }
 }

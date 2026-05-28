@@ -7,18 +7,23 @@ function Navbar({ title = 'MyRights', links = [] }) {
   )
 
   const [accessOpen, setAccessOpen] = useState(false)
+  const [selectedLanguage, setSelectedLanguage] = useState('עברית')
   const accessRef = useRef(null)
 
   useEffect(() => {
     function onDocClick(event) {
       if (!accessRef.current) return
+
       if (!accessRef.current.contains(event.target)) {
         setAccessOpen(false)
       }
     }
 
     document.addEventListener('click', onDocClick)
-    return () => document.removeEventListener('click', onDocClick)
+
+    return () => {
+      document.removeEventListener('click', onDocClick)
+    }
   }, [])
 
   function resetAccessibility() {
@@ -30,6 +35,13 @@ function Navbar({ title = 'MyRights', links = [] }) {
       'accessibility-highlight-links'
     )
   }
+
+  const languages = [
+    { label: 'עברית', value: 'עברית' },
+    { label: 'EN', value: 'English' },
+    { label: 'RU', value: 'Russian' },
+    { label: 'AR', value: 'Arabic' },
+  ]
 
   return (
     <header className="navbar">
@@ -60,94 +72,118 @@ function Navbar({ title = 'MyRights', links = [] }) {
           )}
 
           <div className="navbar-actions">
-            <div className="accessibility" ref={accessRef}>
-              <button
-                type="button"
-                className="accessibility-btn"
-                aria-haspopup="true"
-                aria-expanded={accessOpen}
-                aria-controls="accessibility-menu"
-                onClick={(event) => {
-                  event.stopPropagation()
-                  setAccessOpen((value) => !value)
-                }}
-              >
-                נגישות
-              </button>
-
-              <div
-                id="accessibility-menu"
-                className={`accessibility-menu ${accessOpen ? 'open' : ''}`}
-                role="menu"
-                aria-label="תפריט נגישות"
-              >
+            <div className="navbar-controls">
+              <div className="accessibility" ref={accessRef}>
                 <button
                   type="button"
-                  className="accessibility-item"
-                  onClick={() => {
-                    document.body.classList.remove('accessibility-text-small')
-                    document.body.classList.add('accessibility-text-large')
-                    setAccessOpen(false)
+                  className="accessibility-btn"
+                  aria-haspopup="true"
+                  aria-expanded={accessOpen}
+                  aria-controls="accessibility-menu"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setAccessOpen((value) => !value)
                   }}
                 >
-                  הגדלת טקסט
+                  נגישות
                 </button>
 
-                <button
-                  type="button"
-                  className="accessibility-item"
-                  onClick={() => {
-                    document.body.classList.remove('accessibility-text-large')
-                    document.body.classList.add('accessibility-text-small')
-                    setAccessOpen(false)
-                  }}
+                <div
+                  id="accessibility-menu"
+                  className={`accessibility-menu ${accessOpen ? 'open' : ''}`}
+                  role="menu"
+                  aria-label="תפריט נגישות"
                 >
-                  הקטנת טקסט
-                </button>
+                  <button
+                    type="button"
+                    className="accessibility-item"
+                    onClick={() => {
+                      document.body.classList.remove('accessibility-text-small')
+                      document.body.classList.add('accessibility-text-large')
+                      setAccessOpen(false)
+                    }}
+                  >
+                    הגדלת טקסט
+                  </button>
 
-                <button
-                  type="button"
-                  className="accessibility-item"
-                  onClick={() => {
-                    document.body.classList.toggle('accessibility-high-contrast')
-                    setAccessOpen(false)
-                  }}
-                >
-                  ניגודיות צבעים
-                </button>
+                  <button
+                    type="button"
+                    className="accessibility-item"
+                    onClick={() => {
+                      document.body.classList.remove('accessibility-text-large')
+                      document.body.classList.add('accessibility-text-small')
+                      setAccessOpen(false)
+                    }}
+                  >
+                    הקטנת טקסט
+                  </button>
 
-                <button
-                  type="button"
-                  className="accessibility-item"
-                  onClick={() => {
-                    document.body.classList.toggle('accessibility-grayscale')
-                    setAccessOpen(false)
-                  }}
-                >
-                  גווני אפור
-                </button>
+                  <button
+                    type="button"
+                    className="accessibility-item"
+                    onClick={() => {
+                      document.body.classList.toggle('accessibility-high-contrast')
+                      setAccessOpen(false)
+                    }}
+                  >
+                    ניגודיות צבעים
+                  </button>
 
-                <button
-                  type="button"
-                  className="accessibility-item"
-                  onClick={() => {
-                    document.body.classList.toggle('accessibility-highlight-links')
-                    setAccessOpen(false)
-                  }}
-                >
-                  הדגשת קישורים
-                </button>
+                  <button
+                    type="button"
+                    className="accessibility-item"
+                    onClick={() => {
+                      document.body.classList.toggle('accessibility-grayscale')
+                      setAccessOpen(false)
+                    }}
+                  >
+                    גווני אפור
+                  </button>
 
-                <button
-                  type="button"
-                  className="accessibility-item reset"
-                  onClick={() => {
-                    resetAccessibility()
-                    setAccessOpen(false)
-                  }}
-                >
-                  איפוס הגדרות
-                </button>
+                  <button
+                    type="button"
+                    className="accessibility-item"
+                    onClick={() => {
+                      document.body.classList.toggle('accessibility-highlight-links')
+                      setAccessOpen(false)
+                    }}
+                  >
+                    הדגשת קישורים
+                  </button>
+
+                  <button
+                    type="button"
+                    className="accessibility-item reset"
+                    onClick={() => {
+                      resetAccessibility()
+                      setAccessOpen(false)
+                    }}
+                  >
+                    איפוס הגדרות
+                  </button>
+                </div>
+              </div>
+
+              <div className="language-inline" aria-label="בחירת שפה">
+                {languages.map((language, index) => (
+                  <span className="language-inline-option" key={language.value}>
+                    <button
+                      type="button"
+                      className={
+                        selectedLanguage === language.value
+                          ? 'language-inline-btn active'
+                          : 'language-inline-btn'
+                      }
+                      onClick={() => setSelectedLanguage(language.value)}
+                    >
+                      {language.label}
+                    </button>
+
+                    {index < languages.length - 1 && (
+                      <span className="language-separator">|</span>
+                    )}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
