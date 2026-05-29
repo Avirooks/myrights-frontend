@@ -68,7 +68,7 @@ function HomePage() {
             <div className="home-ai-box">
               <div className="home-ai-header">
                 <span className="home-ai-badge">✦</span>
-                <h2>שאלו את ה־AI שלנו</h2>
+                <h2> עוזר זכויות חכם</h2>
               </div>
 
               <div className="home-ai-input-row">

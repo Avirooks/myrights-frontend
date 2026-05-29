@@ -16,7 +16,7 @@ function QuestionnairePage() {
         links={[
           { label: 'בית', href: '/' },
           { label: 'שאלון', href: '/questionnaire' },
-          { label: 'זכויות מותאמות', href: '/dashboard' }
+          { label: 'זכויות מותאמות', href: '/dashboard' },
         ]}
       />
 
@@ -49,17 +49,31 @@ function QuestionnairePage() {
                 <div className="questionnaire-form-grid">
                   <div className="questionnaire-form-group">
                     <label htmlFor="parentName">שם ההורה</label>
-                    <input id="parentName" name="parentName" type="text" />
+                    <input
+                      id="parentName"
+                      name="parentName"
+                      type="text"
+                      placeholder="לדוגמה: דויד"
+                      required
+                    />
                   </div>
 
                   <div className="questionnaire-form-group">
                     <label htmlFor="age">גיל</label>
-                    <input id="age" name="age" type="number" />
+                    <input
+                      id="age"
+                      name="age"
+                      type="number"
+                      min="60"
+                      max="120"
+                      placeholder="לדוגמה: 72"
+                      required
+                    />
                   </div>
 
                   <div className="questionnaire-form-group">
                     <label htmlFor="maritalStatus">מצב משפחתי</label>
-                    <select id="maritalStatus" name="maritalStatus">
+                    <select id="maritalStatus" name="maritalStatus" required>
                       <option value="">בחר מצב משפחתי</option>
                       <option value="married">נשוי/ה</option>
                       <option value="widowed">אלמן/ה</option>
@@ -76,7 +90,7 @@ function QuestionnairePage() {
                 <div className="questionnaire-form-grid two-columns">
                   <div className="questionnaire-form-group">
                     <label htmlFor="income">האם יש להורה הכנסה נוספת?</label>
-                    <select id="income" name="income">
+                    <select id="income" name="income" required>
                       <option value="">בחר תשובה</option>
                       <option value="yes">כן</option>
                       <option value="no">לא</option>
@@ -85,7 +99,7 @@ function QuestionnairePage() {
 
                   <div className="questionnaire-form-group">
                     <label htmlFor="dailyHelp">האם ההורה זקוק לעזרה יומיומית?</label>
-                    <select id="dailyHelp" name="dailyHelp">
+                    <select id="dailyHelp" name="dailyHelp" required>
                       <option value="">בחר תשובה</option>
                       <option value="yes">כן</option>
                       <option value="no">לא</option>
@@ -96,7 +110,7 @@ function QuestionnairePage() {
 
               <div className="questionnaire-actions">
                 <button type="submit" className="primary questionnaire-submit-btn">
-                  הצג זכויות מתאימות
+                  הצג זכויות מותאמות
                 </button>
               </div>
             </form>
