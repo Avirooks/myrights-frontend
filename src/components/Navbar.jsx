@@ -1,21 +1,33 @@
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 function Navbar({ title = 'MyRights', links = [] }) {
-  const filteredLinks = links.filter(
-    (link) => link.label !== 'שאלון' && link.label !== 'Questionnaire'
-  )
+  const navigate = useNavigate()
+  const { user, signOut } = useAuth()
 
   const [accessOpen, setAccessOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState('עברית')
+
   const accessRef = useRef(null)
+  const menuRef = useRef(null)
+
+  const defaultLinks = [
+    { label: 'בית', href: '/' },
+    { label: 'זכויות מותאמות', href: '/dashboard' },
+  ]
+
+  const menuLinks = links.length > 0 ? links : defaultLinks
 
   useEffect(() => {
     function onDocClick(event) {
-      if (!accessRef.current) return
-
-      if (!accessRef.current.contains(event.target)) {
+      if (accessRef.current && !accessRef.current.contains(event.target)) {
         setAccessOpen(false)
+      }
+
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false)
       }
     }
 
@@ -36,6 +48,12 @@ function Navbar({ title = 'MyRights', links = [] }) {
     )
   }
 
+  const handleLogout = async () => {
+    await signOut()
+    setMenuOpen(false)
+    navigate('/')
+  }
+
   const languages = [
     { label: 'עברית', value: 'עברית' },
     { label: 'EN', value: 'English' },
@@ -46,32 +64,85 @@ function Navbar({ title = 'MyRights', links = [] }) {
   return (
     <header className="navbar">
       <div className="container">
-        <div className="navbar-inner">
-          <div className="navbar-brand">
-            <h1>{title}</h1>
-            <p className="navbar-slogan">הדרך הפשוטה לעזור להורים</p>
-          </div>
+        <div className="navbar-inner compact-navbar">
+          <div className="navbar-brand-menu">
+            <div className="navbar-brand">
+              <h1>{title}</h1>
+              <p className="navbar-slogan">הדרך הפשוטה לעזור להורים</p>
+            </div>
 
-          {filteredLinks.length > 0 && (
-            <nav aria-label="ניווט ראשי" className="navbar-center">
-              <ul className="navbar-nav">
-                {filteredLinks.map((link) => (
-                  <li key={link.label}>
+            <div className="main-menu-wrapper" ref={menuRef}>
+              <button
+                type="button"
+                className="hamburger-btn"
+                aria-label="פתיחת תפריט"
+                aria-expanded={menuOpen}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setMenuOpen((value) => !value)
+                }}
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </button>
+
+              <div className={`main-menu-dropdown ${menuOpen ? 'open' : ''}`}>
+                <nav aria-label="תפריט ראשי">
+                  {menuLinks.map((link) => (
                     <NavLink
+                      key={link.label}
                       to={link.href}
                       className={({ isActive }) =>
-                        isActive ? 'navbar-link active' : 'navbar-link'
+                        isActive ? 'main-menu-link active' : 'main-menu-link'
                       }
+                      onClick={() => setMenuOpen(false)}
                     >
                       {link.label}
                     </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )}
+                  ))}
 
-          <div className="navbar-actions">
+                  <div className="main-menu-divider"></div>
+
+                  {!user ? (
+                    <>
+                      <Link
+                        to="/login"
+                        className="main-menu-link"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        התחברות
+                      </Link>
+
+                      <Link
+                        to="/register"
+                        className="main-menu-link primary"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        הרשמה
+                      </Link>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      className="main-menu-link logout"
+                      onClick={handleLogout}
+                    >
+                      התנתקות
+                    </button>
+                  )}
+
+                  <div className="main-menu-divider"></div>
+
+                  <button type="button" className="main-menu-link disabled">
+                    התחברות מנהל — בהמשך
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <div className="navbar-actions compact-actions">
             <div className="navbar-controls">
               <div className="accessibility" ref={accessRef}>
                 <button
