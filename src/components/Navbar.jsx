@@ -66,10 +66,10 @@ function Navbar({ title = 'MyRights', links = [] }) {
       <div className="container">
         <div className="navbar-inner compact-navbar">
           <div className="navbar-brand-menu">
-            <div className="navbar-brand">
-              <h1>{title}</h1>
-              <p className="navbar-slogan">הדרך הפשוטה לעזור להורים</p>
-            </div>
+            <Link to="/" className="navbar-brand navbar-brand-link" aria-label="חזרה לדף הבית">
+  <h1>{title}</h1>
+  <p className="navbar-slogan">הדרך הפשוטה לעזור להורים</p>
+</Link>
 
             <div className="main-menu-wrapper" ref={menuRef}>
               <button
@@ -146,18 +146,30 @@ function Navbar({ title = 'MyRights', links = [] }) {
             <div className="navbar-controls">
               <div className="accessibility" ref={accessRef}>
                 <button
-                  type="button"
-                  className="accessibility-btn"
-                  aria-haspopup="true"
-                  aria-expanded={accessOpen}
-                  aria-controls="accessibility-menu"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    setAccessOpen((value) => !value)
-                  }}
-                >
-                  תפריט נגישות
-                </button>
+  type="button"
+  className="accessibility-btn accessibility-icon-btn"
+  aria-label="פתיחת תפריט נגישות"
+  title="תפריט נגישות"
+  aria-haspopup="true"
+  aria-expanded={accessOpen}
+  aria-controls="accessibility-menu"
+  onClick={(event) => {
+    event.stopPropagation()
+    setAccessOpen((value) => !value)
+  }}
+>
+  <svg
+    className="accessibility-icon"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <circle cx="12" cy="4" r="2" />
+    <path d="M4 9h16" />
+    <path d="M12 6v14" />
+    <path d="M8 20l4-8 4 8" />
+  </svg>
+</button>
 
                 <div
                   id="accessibility-menu"
