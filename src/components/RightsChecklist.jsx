@@ -117,34 +117,45 @@ function RightsChecklist({
     }
   }, [])
 
-  async function saveTaskToSupabase({
-    taskKey,
-    rightId,
-    taskText,
-    taskType,
-    isCompleted,
-  }) {
-    if (!userId) return
+async function saveTaskToSupabase({
+  taskKey,
+  rightId,
+  taskText,
+  taskType,
+  isCompleted,
+}) {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
 
-    const { error } = await supabase.from('right_checklist_tasks').upsert(
-      {
-        user_id: userId,
-        right_id: rightId,
-        task_key: taskKey,
-        task_text: taskText,
-        task_type: taskType,
-        is_completed: isCompleted,
-        updated_at: new Date().toISOString(),
-      },
-      {
-        onConflict: 'user_id,task_key',
-      }
-    )
-
-    if (error) {
-      throw error
-    }
+  if (userError) {
+    throw userError
   }
+
+  if (!user) {
+    throw new Error('No logged in user found')
+  }
+
+  const { error } = await supabase.from('right_checklist_tasks').upsert(
+    {
+      user_id: user.id,
+      right_id: rightId,
+      task_key: taskKey,
+      task_text: taskText,
+      task_type: taskType,
+      is_completed: isCompleted,
+      updated_at: new Date().toISOString(),
+    },
+    {
+      onConflict: 'user_id,task_key',
+    }
+  )
+
+  if (error) {
+    throw error
+  }
+}
 
   async function toggleTask({ taskKey, rightId, taskText, taskType }) {
     setSaveError('')
