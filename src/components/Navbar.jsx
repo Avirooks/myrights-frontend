@@ -51,7 +51,7 @@ function Navbar({ title = 'MyRights', links = [] }) {
   const handleLogout = async () => {
     await signOut()
     setMenuOpen(false)
-    navigate('/')
+    navigate('/login')
   }
 
   const languages = [

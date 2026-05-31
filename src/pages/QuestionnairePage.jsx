@@ -111,7 +111,7 @@ function QuestionnairePage() {
 
                 <div className="questionnaire-form-grid">
                   <div className="questionnaire-form-group">
-                    <label htmlFor="parentName">שם ההורה</label>
+                    <label htmlFor="parentName">שם מלא </label>
                     <input
                       id="parentName"
                       name="parentName"

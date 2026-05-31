@@ -25,9 +25,9 @@ export function AuthProvider({ children }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
+    } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      setSession(currentSession)
+      setUser(currentSession?.user ?? null)
       setLoading(false)
     })
 
@@ -41,7 +41,13 @@ export function AuthProvider({ children }) {
 
     if (error) {
       console.error('Error signing out:', error.message)
+      return { success: false, error }
     }
+
+    setSession(null)
+    setUser(null)
+
+    return { success: true, error: null }
   }
 
   return (
