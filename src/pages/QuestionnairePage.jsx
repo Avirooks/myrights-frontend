@@ -1,21 +1,64 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import { supabase } from '../lib/supabase'
+
+const specialStatusOptions = [
+  { value: 'disabled_idf', label: 'נכה צה״ל' },
+  { value: 'disabled_idf_family', label: 'בן/בת משפחה של נכה צה״ל' },
+  { value: 'bereaved_family', label: 'משפחה שכולה' },
+  { value: 'terror_victim', label: 'נפגע/ת פעולות איבה' },
+  { value: 'october_7_survivor', label: 'נפגע/ת או שורד/ת מאירועי 7.10' },
+  { value: 'holocaust_survivor', label: 'שורד/ת שואה' },
+  { value: 'other', label: 'אחר' },
+  { value: 'none', label: 'לא ידוע / לא רלוונטי' },
+]
+
+function calculateAge(birthDate) {
+  if (!birthDate) return null
+
+  const today = new Date()
+  const dateOfBirth = new Date(birthDate)
+
+  if (Number.isNaN(dateOfBirth.getTime())) return null
+
+  let age = today.getFullYear() - dateOfBirth.getFullYear()
+  const monthDifference = today.getMonth() - dateOfBirth.getMonth()
+
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < dateOfBirth.getDate())
+  ) {
+    age -= 1
+  }
+
+  return age
+}
+
+function isValidIsraeliId(value) {
+  if (!value) return true
+  return /^\d{9}$/.test(value)
+}
 
 function QuestionnairePage() {
   const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
     parentName: '',
-    age: '',
+    birthDate: '',
+    idNumber: '',
+    gender: '',
     maritalStatus: '',
-    income: '',
-    dailyHelp: '',
+    specialStatuses: ['none'],
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+
+  const calculatedAge = useMemo(
+    () => calculateAge(formData.birthDate),
+    [formData.birthDate]
+  )
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -26,9 +69,62 @@ function QuestionnairePage() {
     }))
   }
 
+  function handleIdNumberChange(event) {
+    const onlyDigits = event.target.value.replace(/\D/g, '').slice(0, 9)
+
+    setFormData((prevData) => ({
+      ...prevData,
+      idNumber: onlyDigits,
+    }))
+  }
+
+  function handleSpecialStatusChange(event) {
+    const { value, checked } = event.target
+
+    setFormData((prevData) => {
+      if (value === 'none') {
+        return {
+          ...prevData,
+          specialStatuses: checked ? ['none'] : [],
+        }
+      }
+
+      const statusesWithoutNone = prevData.specialStatuses.filter(
+        (status) => status !== 'none'
+      )
+
+      if (checked) {
+        return {
+          ...prevData,
+          specialStatuses: [...statusesWithoutNone, value],
+        }
+      }
+
+      const updatedStatuses = statusesWithoutNone.filter(
+        (status) => status !== value
+      )
+
+      return {
+        ...prevData,
+        specialStatuses: updatedStatuses.length > 0 ? updatedStatuses : ['none'],
+      }
+    })
+  }
+
   async function handleSubmit(event) {
     event.preventDefault()
     setErrorMessage('')
+
+    if (!calculatedAge || calculatedAge < 0 || calculatedAge > 120) {
+      setErrorMessage('יש להזין תאריך לידה תקין.')
+      return
+    }
+
+    if (!isValidIsraeliId(formData.idNumber)) {
+      setErrorMessage('אם מזינים תעודת זהות, יש להזין בדיוק 9 ספרות.')
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -49,10 +145,12 @@ function QuestionnairePage() {
       const questionnaireData = {
         user_id: user.id,
         parent_name: formData.parentName.trim(),
-        age: Number(formData.age),
+        birth_date: formData.birthDate,
+        age: calculatedAge,
+        id_number: formData.idNumber.trim() || null,
+        gender: formData.gender,
         marital_status: formData.maritalStatus,
-        has_extra_income: formData.income === 'yes',
-        needs_daily_help: formData.dailyHelp === 'yes',
+        special_statuses: formData.specialStatuses,
       }
 
       const { error: insertError } = await supabase
@@ -65,7 +163,14 @@ function QuestionnairePage() {
 
       navigate('/dashboard')
     } catch (error) {
-      console.error('Questionnaire submit error:', error)
+      console.error('Questionnaire submit error:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        fullError: error,
+      })
+
       setErrorMessage('אירעה שגיאה בשמירת השאלון. נסה שוב בעוד רגע.')
     } finally {
       setIsSubmitting(false)
@@ -79,7 +184,7 @@ function QuestionnairePage() {
         links={[
           { label: 'בית', href: '/' },
           { label: 'שאלון', href: '/questionnaire' },
-          { label: 'זכויות מותאמות', href: '/dashboard' },
+          { label: 'זכויות לבדיקה', href: '/dashboard' },
         ]}
       />
 
@@ -97,8 +202,8 @@ function QuestionnairePage() {
             <h1>שאלון בדיקת זכויות</h1>
 
             <p>
-              מלאו מספר פרטים בסיסיים על ההורה כדי לקבל התאמה ראשונית של זכויות,
-              הטבות וקצבאות שעשויות להתאים.
+              מלאו פרטים בסיסיים על ההורה כדי לקבל רשימת זכויות ראשונית שכדאי
+              לבדוק מול הגורמים הרשמיים.
             </p>
           </div>
         </section>
@@ -111,31 +216,74 @@ function QuestionnairePage() {
 
                 <div className="questionnaire-form-grid">
                   <div className="questionnaire-form-group">
-                    <label htmlFor="parentName">שם מלא </label>
+                    <label htmlFor="parentName">שם מלא של ההורה</label>
                     <input
                       id="parentName"
                       name="parentName"
                       type="text"
                       value={formData.parentName}
                       onChange={handleChange}
-                      placeholder="לדוגמה: דויד"
+                      placeholder="לדוגמה: דויד כהן"
                       required
                     />
                   </div>
 
                   <div className="questionnaire-form-group">
-                    <label htmlFor="age">גיל</label>
+                    <label htmlFor="birthDate">תאריך לידה</label>
                     <input
-                      id="age"
-                      name="age"
-                      type="number"
-                      min="60"
-                      max="120"
-                      value={formData.age}
+                      id="birthDate"
+                      name="birthDate"
+                      type="date"
+                      value={formData.birthDate}
                       onChange={handleChange}
-                      placeholder="לדוגמה: 72"
                       required
                     />
+                  </div>
+
+                  <div className="questionnaire-form-group">
+                    <label htmlFor="calculatedAge">גיל מחושב</label>
+                    <input
+                      id="calculatedAge"
+                      type="text"
+                      value={
+                        calculatedAge !== null && calculatedAge >= 0
+                          ? `${calculatedAge}`
+                          : ''
+                      }
+                      placeholder="יחושב אוטומטית"
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="questionnaire-form-group">
+                    <label htmlFor="idNumber">תעודת זהות</label>
+                    <input
+                      id="idNumber"
+                      name="idNumber"
+                      type="text"
+                      inputMode="numeric"
+                      value={formData.idNumber}
+                      onChange={handleIdNumberChange}
+                      placeholder="אופציונלי - 9 ספרות"
+                      maxLength="9"
+                    />
+                  </div>
+
+                  <div className="questionnaire-form-group">
+                    <label htmlFor="gender">מין / מגדר</label>
+                    <select
+                      id="gender"
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">בחר/י אפשרות</option>
+                      <option value="male">זכר</option>
+                      <option value="female">נקבה</option>
+                      <option value="other">אחר</option>
+                      <option value="prefer_not_to_say">מעדיף/ה לא לציין</option>
+                    </select>
                   </div>
 
                   <div className="questionnaire-form-group">
@@ -152,44 +300,35 @@ function QuestionnairePage() {
                       <option value="widowed">אלמן/ה</option>
                       <option value="divorced">גרוש/ה</option>
                       <option value="single">רווק/ה</option>
+                      <option value="unknown">לא ידוע</option>
                     </select>
                   </div>
                 </div>
               </section>
 
               <section className="questionnaire-form-section">
-                <h2>מצב כלכלי ותפקודי</h2>
+                <h2>מצבים מיוחדים לבדיקה</h2>
 
-                <div className="questionnaire-form-grid two-columns">
-                  <div className="questionnaire-form-group">
-                    <label htmlFor="income">האם יש להורה הכנסה נוספת?</label>
-                    <select
-                      id="income"
-                      name="income"
-                      value={formData.income}
-                      onChange={handleChange}
-                      required
-                    >
-                      <option value="">בחר תשובה</option>
-                      <option value="yes">כן</option>
-                      <option value="no">לא</option>
-                    </select>
-                  </div>
+                <p className="questionnaire-section-description">
+                  סמנו רק אם אחד מהמצבים הבאים רלוונטי. המידע משמש להצגת זכויות
+                  לבדיקה ראשונית ואינו מהווה אישור זכאות.
+                </p>
 
-                  <div className="questionnaire-form-group">
-                    <label htmlFor="dailyHelp">האם ההורה זקוק לעזרה יומיומית?</label>
-                    <select
-                      id="dailyHelp"
-                      name="dailyHelp"
-                      value={formData.dailyHelp}
-                      onChange={handleChange}
-                      required
+                <div className="questionnaire-checkbox-grid">
+                  {specialStatusOptions.map((option) => (
+                    <label
+                      key={option.value}
+                      className="questionnaire-checkbox-option"
                     >
-                      <option value="">בחר תשובה</option>
-                      <option value="yes">כן</option>
-                      <option value="no">לא</option>
-                    </select>
-                  </div>
+                      <input
+                        type="checkbox"
+                        value={option.value}
+                        checked={formData.specialStatuses.includes(option.value)}
+                        onChange={handleSpecialStatusChange}
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
                 </div>
               </section>
 
@@ -203,7 +342,7 @@ function QuestionnairePage() {
                   className="primary questionnaire-submit-btn"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'שומר נתונים...' : 'הצג זכויות מותאמות'}
+                  {isSubmitting ? 'שומר נתונים...' : 'הצג זכויות לבדיקה'}
                 </button>
               </div>
             </form>

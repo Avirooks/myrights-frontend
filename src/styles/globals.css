@@ -1447,3 +1447,115 @@ body.accessibility-highlight-links a {
   outline: 2px solid rgba(30, 78, 121, 0.35);
   outline-offset: 2px;
 }
+.questionnaire-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 28px;
+  margin-top: 16px;
+}
+
+.questionnaire-checkbox-option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #d8dee9;
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.questionnaire-checkbox-option input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.questionnaire-checkbox-option span {
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .questionnaire-checkbox-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}.questionnaire-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 28px;
+  margin-top: 16px;
+}
+
+.questionnaire-checkbox-option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #d8dee9;
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.questionnaire-checkbox-option input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.questionnaire-checkbox-option span {
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .questionnaire-checkbox-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}.questionnaire-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 28px;
+  margin-top: 16px;
+}
+
+.questionnaire-checkbox-option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #d8dee9;
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.questionnaire-checkbox-option input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.questionnaire-checkbox-option span {
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .questionnaire-checkbox-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
