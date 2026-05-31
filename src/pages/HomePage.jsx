@@ -60,7 +60,7 @@ function HomePage() {
               <span className="home-search-icon" aria-hidden="true">⌕</span>
               <input
                 type="text"
-                placeholder="חיפוש זכות, הטבה או קצבה..."
+                placeholder="בפיתוח,בפיתוח,בפיתוח"
                 aria-label="חיפוש זכויות"
               />
             </div>
@@ -74,7 +74,7 @@ function HomePage() {
               <div className="home-ai-input-row">
                 <input
                   type="text"
-                  placeholder="מה רצית לדעת?"
+                  placeholder="בפיתוח,בפיתוח,בפיתוח"
                   aria-label="שאלה לעוזר האישי"
                 />
                 <button type="button" aria-label="שליחת שאלה">
@@ -112,18 +112,6 @@ function HomePage() {
                 </Card>
               ))}
             </div>
-          </div>
-        </section>
-
-        <section className="home-bottom-cta">
-          <div className="container">
-            <h2>מוכנים להתחיל?</h2>
-            <p>
-              מלאו שאלון קצר וקבלו רשימה ראשונית של זכויות וקצבאות שעשויות להתאים.
-            </p>
-            <Button variant="primary" onClick={() => navigate('/questionnaire')}>
-              מלא שאלון
-            </Button>
           </div>
         </section>
       </main>
