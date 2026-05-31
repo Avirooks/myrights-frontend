@@ -72,6 +72,47 @@ function maskIdNumber(idNumber) {
   return `******${cleanId.slice(-3)}`
 }
 
+function isRightMatched(right, questionnaire) {
+  if (!questionnaire) return false
+
+  const rules = right.matchRules
+
+  if (!rules || Object.keys(rules).length === 0) {
+    return false
+  }
+
+  if (rules.minAge && Number(questionnaire.age) < rules.minAge) {
+    return false
+  }
+
+  if (rules.maxAge && Number(questionnaire.age) > rules.maxAge) {
+    return false
+  }
+
+  if (rules.gender && questionnaire.gender !== rules.gender) {
+    return false
+  }
+
+  if (
+    rules.maritalStatus &&
+    questionnaire.marital_status !== rules.maritalStatus
+  ) {
+    return false
+  }
+
+  if (rules.specialStatus) {
+    const statuses = Array.isArray(questionnaire.special_statuses)
+      ? questionnaire.special_statuses
+      : []
+
+    if (!statuses.includes(rules.specialStatus)) {
+      return false
+    }
+  }
+
+  return true
+}
+
 function DashboardPage() {
   const [checklistOpen, setChecklistOpen] = useState(false)
   const [latestQuestionnaire, setLatestQuestionnaire] = useState(null)
@@ -79,7 +120,15 @@ function DashboardPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const navigate = useNavigate()
 
-  const hasRights = rightsData.length > 0
+  const matchedRights = useMemo(() => {
+    if (!latestQuestionnaire) return []
+
+    return rightsData.filter((right) =>
+      isRightMatched(right, latestQuestionnaire)
+    )
+  }, [latestQuestionnaire])
+
+  const hasRights = matchedRights.length > 0
 
   const specialStatusesText = useMemo(() => {
     return getSpecialStatusesText(latestQuestionnaire?.special_statuses)
@@ -302,7 +351,7 @@ function DashboardPage() {
                     aria-label="רשימת זכויות לבדיקה"
                   >
                     {hasRights ? (
-                      rightsData.map((right) => (
+                      matchedRights.map((right) => (
                         <Card key={right.id}>
                           <article className="dashboard-right-card">
                             <div className="dashboard-right-header">
@@ -353,18 +402,19 @@ function DashboardPage() {
                     ) : (
                       <Card>
                         <div className="dashboard-empty-state">
-                          <h2>לא נמצאו זכויות להצגה</h2>
+                          <h2>לא נמצאו זכויות מתאימות להצגה</h2>
                           <p>
-                            כרגע אין זכויות זמינות להצגה. ניתן לחזור לשאלון
-                            ולמלא את הפרטים מחדש.
+                            לפי הנתונים שמולאו בשאלון לא נמצאו כרגע זכויות
+                            מתאימות להצגה. ניתן לעדכן את השאלון או לבדוק מול
+                            גורם רשמי.
                           </p>
 
                           <Button
                             type="button"
                             variant="primary"
-                            onClick={() => navigate('/questionnaire')}
+                            onClick={() => navigate('/questionnaire?mode=edit')}
                           >
-                            חזרה לשאלון
+                            עדכון שאלון
                           </Button>
                         </div>
                       </Card>
@@ -375,7 +425,7 @@ function DashboardPage() {
                     className="desktop-checklist"
                     aria-label="צ׳קליסט מימוש זכויות"
                   >
-                    <RightsChecklist />
+                    <RightsChecklist rights={matchedRights} />
                   </aside>
 
                   {checklistOpen && (
@@ -383,6 +433,7 @@ function DashboardPage() {
                       <RightsChecklist
                         id="mobile-checklist-content"
                         variant="mobile"
+                        rights={matchedRights}
                       />
                     </div>
                   )}
