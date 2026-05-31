@@ -113,6 +113,128 @@ function isRightMatched(right, questionnaire) {
   return true
 }
 
+function areNonAgeRulesMatched(right, questionnaire) {
+  if (!questionnaire) return false
+
+  const rules = right.matchRules
+
+  if (!rules || Object.keys(rules).length === 0) {
+    return false
+  }
+
+  if (rules.gender && questionnaire.gender !== rules.gender) {
+    return false
+  }
+
+  if (
+    rules.maritalStatus &&
+    questionnaire.marital_status !== rules.maritalStatus
+  ) {
+    return false
+  }
+
+  if (rules.specialStatus) {
+    const statuses = Array.isArray(questionnaire.special_statuses)
+      ? questionnaire.special_statuses
+      : []
+
+    if (!statuses.includes(rules.specialStatus)) {
+      return false
+    }
+  }
+
+  return true
+}
+
+function getTargetAgeDate(birthDate, targetAge) {
+  if (!birthDate || !targetAge) return null
+
+  const date = new Date(birthDate)
+
+  if (Number.isNaN(date.getTime())) {
+    return null
+  }
+
+  date.setFullYear(date.getFullYear() + targetAge)
+
+  return date
+}
+
+function getFutureTimeText(targetDate) {
+  if (!targetDate) return ''
+
+  const today = new Date()
+
+  if (targetDate <= today) {
+    return ''
+  }
+
+  let months =
+    (targetDate.getFullYear() - today.getFullYear()) * 12 +
+    (targetDate.getMonth() - today.getMonth())
+
+  if (targetDate.getDate() < today.getDate()) {
+    months -= 1
+  }
+
+  if (months <= 0) {
+    return 'פחות מחודש'
+  }
+
+  if (months < 12) {
+    return `${months} חודשים`
+  }
+
+  const years = Math.floor(months / 12)
+  const remainingMonths = months % 12
+
+  if (remainingMonths === 0) {
+    return years === 1 ? 'שנה' : `${years} שנים`
+  }
+
+  return `${years} שנים ו-${remainingMonths} חודשים`
+}
+
+function getFutureRight(right, questionnaire) {
+  if (!questionnaire) return null
+
+  const rules = right.matchRules
+
+  if (!rules || !rules.minAge || !right.showAsFutureReminder) {
+    return null
+  }
+
+  if (isRightMatched(right, questionnaire)) {
+    return null
+  }
+
+  if (!areNonAgeRulesMatched(right, questionnaire)) {
+    return null
+  }
+
+  const currentAge = Number(questionnaire.age)
+
+  if (Number.isNaN(currentAge) || currentAge >= rules.minAge) {
+    return null
+  }
+
+  const yearsUntil = rules.minAge - currentAge
+
+  if (yearsUntil > 2) {
+    return null
+  }
+
+  const targetDate = getTargetAgeDate(questionnaire.birth_date, rules.minAge)
+
+  return {
+    ...right,
+    futureDateText: targetDate
+      ? targetDate.toLocaleDateString('he-IL')
+      : `גיל ${rules.minAge}`,
+    futureTimeText: getFutureTimeText(targetDate),
+  }
+}
+
 function DashboardPage() {
   const [checklistOpen, setChecklistOpen] = useState(false)
   const [latestQuestionnaire, setLatestQuestionnaire] = useState(null)
@@ -126,6 +248,14 @@ function DashboardPage() {
     return rightsData.filter((right) =>
       isRightMatched(right, latestQuestionnaire)
     )
+  }, [latestQuestionnaire])
+
+  const futureRights = useMemo(() => {
+    if (!latestQuestionnaire) return []
+
+    return rightsData
+      .map((right) => getFutureRight(right, latestQuestionnaire))
+      .filter(Boolean)
   }, [latestQuestionnaire])
 
   const hasRights = matchedRights.length > 0
@@ -157,7 +287,7 @@ function DashboardPage() {
         const { data, error } = await supabase
           .from('questionnaire_answers')
           .select(
-            'id, parent_name, age, id_number, gender, marital_status, special_statuses, created_at'
+            'id, parent_name, birth_date, age, id_number, gender, marital_status, special_statuses, created_at'
           )
           .order('created_at', { ascending: false })
           .limit(1)
@@ -200,13 +330,28 @@ function DashboardPage() {
       <main className="dashboard-page">
         <section className="dashboard-hero">
           <div className="container dashboard-hero-content">
-            <button
-              type="button"
-              className="dashboard-back-btn"
-              onClick={() => navigate('/questionnaire')}
-            >
-              חזרה לשאלון
-            </button>
+           <div className="dashboard-hero-actions">
+  <button
+    type="button"
+    className="dashboard-back-btn"
+    onClick={() => navigate('/questionnaire')}
+  >
+    חזרה לשאלון
+  </button>
+
+  {latestQuestionnaire && (
+    <Button
+      type="button"
+      variant="secondary"
+      onClick={() => setChecklistOpen((value) => !value)}
+      aria-expanded={checklistOpen}
+      aria-controls="mobile-checklist"
+      className="dashboard-checklist-hero-btn"
+    >
+      {checklistOpen ? 'הסתר צ׳קליסט' : 'צ׳קליסט מימוש זכויות'}
+    </Button>
+  )}
+</div>
 
             <h1>זכויות לבדיקה לפי השאלון</h1>
 
@@ -425,7 +570,10 @@ function DashboardPage() {
                     className="desktop-checklist"
                     aria-label="צ׳קליסט מימוש זכויות"
                   >
-                    <RightsChecklist rights={matchedRights} />
+                    <RightsChecklist
+                      rights={matchedRights}
+                      futureRights={futureRights}
+                    />
                   </aside>
 
                   {checklistOpen && (
@@ -434,6 +582,7 @@ function DashboardPage() {
                         id="mobile-checklist-content"
                         variant="mobile"
                         rights={matchedRights}
+                        futureRights={futureRights}
                       />
                     </div>
                   )}

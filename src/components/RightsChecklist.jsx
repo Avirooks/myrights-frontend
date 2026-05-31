@@ -1,195 +1,346 @@
-function RightsChecklist({ id, variant = 'desktop' }) {
-  const completedItems = [
-    { title: 'הנחה בתחבורה ציבורית', status: 'בוצע' },
-  ]
+import { useEffect, useMemo, useState } from 'react'
+import { supabase } from '../lib/supabase'
 
-  const pendingItems = [
-    { title: 'השלמת הכנסה', status: 'לבדיקת מסמכים' },
-    { title: 'קצבת סיעוד', status: 'לבדיקת זכאות' },
-  ]
+function getChecklistItems(right) {
+  if (Array.isArray(right.checklist) && right.checklist.length > 0) {
+    return right.checklist
+  }
 
-  const upcomingItems = [
-    { title: 'קצבת אזרח ותיק', status: 'רלוונטי בעוד שנה' },
-  ]
+  if (Array.isArray(right.actionSteps) && right.actionSteps.length > 0) {
+    return right.actionSteps
+  }
 
-  const isMobile = variant === 'mobile'
+  return []
+}
+
+function getTaskStatus(isCompleted) {
+  return isCompleted ? 'בוצע' : 'לא בוצע'
+}
+
+function buildCurrentTaskKey(rightId, index) {
+  return `current-${rightId}-${index}`
+}
+
+function buildFutureTaskKey(rightId) {
+  return `future-${rightId}`
+}
+
+function RightsChecklist({
+  id,
+  rights = [],
+  futureRights = [],
+  variant = 'desktop',
+}) {
+  const [completedTasks, setCompletedTasks] = useState({})
+  const [userId, setUserId] = useState(null)
+  const [isLoadingTasks, setIsLoadingTasks] = useState(true)
+  const [saveError, setSaveError] = useState('')
+
+  const hasCurrentRights = rights.length > 0
+  const hasFutureRights = futureRights.length > 0
+
+  const totalCurrentTasks = useMemo(() => {
+    return rights.reduce((total, right) => {
+      return total + getChecklistItems(right).length
+    }, 0)
+  }, [rights])
+
+  const totalFutureTasks = futureRights.length
+  const totalTasks = totalCurrentTasks + totalFutureTasks
+
+  const completedTasksCount = useMemo(() => {
+    return Object.values(completedTasks).filter(Boolean).length
+  }, [completedTasks])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadChecklistTasks() {
+      setIsLoadingTasks(true)
+      setSaveError('')
+
+      try {
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser()
+
+        if (userError) {
+          throw userError
+        }
+
+        if (!user) {
+          if (isMounted) {
+            setUserId(null)
+            setCompletedTasks({})
+          }
+
+          return
+        }
+
+        const { data, error } = await supabase
+          .from('right_checklist_tasks')
+          .select('task_key, is_completed')
+          .eq('user_id', user.id)
+
+        if (error) {
+          throw error
+        }
+
+        const savedTasks = {}
+
+        data.forEach((task) => {
+          savedTasks[task.task_key] = task.is_completed
+        })
+
+        if (isMounted) {
+          setUserId(user.id)
+          setCompletedTasks(savedTasks)
+        }
+      } catch (error) {
+        console.error('Checklist load error:', error)
+
+        if (isMounted) {
+          setSaveError('לא הצלחנו לטעון את סימוני הצ׳קליסט.')
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingTasks(false)
+        }
+      }
+    }
+
+    loadChecklistTasks()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  async function saveTaskToSupabase({
+    taskKey,
+    rightId,
+    taskText,
+    taskType,
+    isCompleted,
+  }) {
+    if (!userId) return
+
+    const { error } = await supabase.from('right_checklist_tasks').upsert(
+      {
+        user_id: userId,
+        right_id: rightId,
+        task_key: taskKey,
+        task_text: taskText,
+        task_type: taskType,
+        is_completed: isCompleted,
+        updated_at: new Date().toISOString(),
+      },
+      {
+        onConflict: 'user_id,task_key',
+      }
+    )
+
+    if (error) {
+      throw error
+    }
+  }
+
+  async function toggleTask({ taskKey, rightId, taskText, taskType }) {
+    setSaveError('')
+
+    const nextValue = !completedTasks[taskKey]
+
+    setCompletedTasks((prevTasks) => ({
+      ...prevTasks,
+      [taskKey]: nextValue,
+    }))
+
+    try {
+      await saveTaskToSupabase({
+        taskKey,
+        rightId,
+        taskText,
+        taskType,
+        isCompleted: nextValue,
+      })
+    } catch (error) {
+      console.error('Checklist save error:', error)
+
+      setCompletedTasks((prevTasks) => ({
+        ...prevTasks,
+        [taskKey]: !nextValue,
+      }))
+
+      setSaveError('לא הצלחנו לשמור את הסימון. נסה שוב.')
+    }
+  }
 
   return (
-    <aside
+    <section
       id={id}
-      className={`rights-checklist ${isMobile ? 'mobile' : 'desktop'}`}
-      style={{
-        width: '100%',
-        maxWidth: '100%',
-        backgroundColor: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius)',
-        padding: 'var(--spacing-md)',
-        boxShadow: 'var(--shadow-soft)',
-        position: 'static',
-        boxSizing: 'border-box',
-      }}
+      className={`rights-checklist rights-checklist-${variant}`}
+      aria-label="צ׳קליסט מימוש זכויות"
     >
-      <h2
-        style={{
-          margin: 0,
-          marginBottom: 'var(--spacing-sm)',
-          fontSize: '1.1rem',
-          fontWeight: 700,
-          color: 'var(--color-text)',
-          textAlign: 'right',
-        }}
-      >
-        צ׳קליסט מימוש זכויות
-      </h2>
+<div className="rights-checklist-header">
+  <h2>צ׳קליסט מימוש זכויות</h2>
 
-      <p
-        style={{
-          margin: 0,
-          marginBottom: 'var(--spacing-md)',
-          fontSize: 'var(--font-size-sm)',
-          color: '#5F6B72',
-          textAlign: 'right',
-          lineHeight: 1.5,
-        }}
-      >
-        מעקב מהיר אחרי זכויות שבוצעו, זכויות שדורשות טיפול וזכויות שעשויות להיות רלוונטיות בשנתיים הקרובות.
-      </p>
+  {isLoadingTasks && (
+    <p className="rights-checklist-progress">טוען סימונים שמורים...</p>
+  )}
 
-      <div style={{ display: 'grid', gap: 'var(--spacing-lg)' }}>
-        <div>
-          <h3
-            style={{
-              margin: 0,
-              marginBottom: 'var(--spacing-sm)',
-              fontSize: '0.95rem',
-              fontWeight: 700,
-              color: 'var(--color-success)',
-              textAlign: 'right',
-            }}
-          >
-            ✓ בוצע
-          </h3>
+  {!isLoadingTasks && totalTasks > 0 && (
+    <p className="rights-checklist-progress">
+      סומנו {completedTasksCount} מתוך {totalTasks} משימות
+    </p>
+  )}
+</div>
 
-          <ul
-            style={{
-              margin: 0,
-              padding: 0,
-              listStyle: 'none',
-              display: 'grid',
-              gap: 'var(--spacing-xs)',
-            }}
-          >
-            {completedItems.map((item) => (
-              <li
-                key={item.title}
-                style={{
-                  padding: 'var(--spacing-xs) var(--spacing-sm)',
-                  backgroundColor: 'rgba(56, 142, 60, 0.08)',
-                  borderRadius: 'var(--radius)',
-                  fontSize: 'var(--font-size-sm)',
-                  textAlign: 'right',
-                  color: 'var(--color-text)',
-                }}
-              >
-                <div>{item.title}</div>
-                <div style={{ fontSize: '0.85rem', color: '#5F6B72', marginTop: '0.25rem' }}>
-                  {item.status}
-                </div>
-              </li>
-            ))}
-          </ul>
+      {saveError && <p className="rights-checklist-error">{saveError}</p>}
+
+      {!hasCurrentRights && !hasFutureRights && (
+        <div className="rights-checklist-empty">
+          <p>
+            לאחר מילוי השאלון יוצגו כאן זכויות שניתן לבדוק, משימות למימוש
+            וזכויות שקרובות למימוש בעתיד.
+          </p>
         </div>
+      )}
 
-        <div>
-          <h3
-            style={{
-              margin: 0,
-              marginBottom: 'var(--spacing-sm)',
-              fontSize: '0.95rem',
-              fontWeight: 700,
-              color: 'var(--color-primary)',
-              textAlign: 'right',
-            }}
-          >
-            ⚠ לביצוע
-          </h3>
+      {hasCurrentRights && (
+        <div className="rights-checklist-section">
+          <h3>זכויות למימוש עכשיו</h3>
 
-          <ul
-            style={{
-              margin: 0,
-              padding: 0,
-              listStyle: 'none',
-              display: 'grid',
-              gap: 'var(--spacing-xs)',
-            }}
-          >
-            {pendingItems.map((item) => (
-              <li
-                key={item.title}
-                style={{
-                  padding: 'var(--spacing-xs) var(--spacing-sm)',
-                  backgroundColor: 'var(--color-secondary)',
-                  borderRadius: 'var(--radius)',
-                  fontSize: 'var(--font-size-sm)',
-                  textAlign: 'right',
-                  color: 'var(--color-text)',
-                }}
-              >
-                <div>{item.title}</div>
-                <div style={{ fontSize: '0.85rem', color: '#5F6B72', marginTop: '0.25rem' }}>
-                  {item.status}
+          {rights.map((right) => {
+            const checklistItems = getChecklistItems(right)
+
+            return (
+              <div key={right.id} className="rights-checklist-group">
+                <div className="rights-checklist-group-header">
+                  <h4>{right.title}</h4>
+                  <span className="rights-checklist-badge">
+                    ניתן לבדיקה עכשיו
+                  </span>
                 </div>
-              </li>
-            ))}
-          </ul>
+
+                {right.shortDescription && (
+                  <p className="rights-checklist-note">
+                    {right.shortDescription}
+                  </p>
+                )}
+
+                {checklistItems.length > 0 ? (
+                  <ul className="rights-checklist-list">
+                    {checklistItems.map((item, index) => {
+                      const taskKey = buildCurrentTaskKey(right.id, index)
+                      const isCompleted = Boolean(completedTasks[taskKey])
+
+                      return (
+                        <li key={taskKey}>
+                          <label className="rights-checklist-item">
+                            <input
+                              type="checkbox"
+                              checked={isCompleted}
+                              disabled={isLoadingTasks}
+                              onChange={() =>
+                                toggleTask({
+                                  taskKey,
+                                  rightId: right.id,
+                                  taskText: item,
+                                  taskType: 'current',
+                                })
+                              }
+                            />
+
+                            <span>{item}</span>
+
+                            <strong
+                              className={`rights-checklist-status ${
+                                isCompleted
+                                  ? 'rights-checklist-status-done'
+                                  : 'rights-checklist-status-pending'
+                              }`}
+                            >
+                              {getTaskStatus(isCompleted)}
+                            </strong>
+                          </label>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                ) : (
+                  <p className="rights-checklist-note">
+                    לא הוגדרו משימות עבור זכות זו.
+                  </p>
+                )}
+              </div>
+            )
+          })}
         </div>
+      )}
 
-        <div>
-          <h3
-            style={{
-              margin: 0,
-              marginBottom: 'var(--spacing-sm)',
-              fontSize: '0.95rem',
-              fontWeight: 700,
-              color: '#7C4500',
-              textAlign: 'right',
-            }}
-          >
-            📅 זכויות קרובות למימוש
-          </h3>
+      {hasFutureRights && (
+        <div className="rights-checklist-section rights-checklist-future">
+          <h3>זכויות קרובות למימוש</h3>
 
-          <ul
-            style={{
-              margin: 0,
-              padding: 0,
-              listStyle: 'none',
-              display: 'grid',
-              gap: 'var(--spacing-xs)',
-            }}
-          >
-            {upcomingItems.map((item) => (
-              <li
-                key={item.title}
-                style={{
-                  padding: 'var(--spacing-xs) var(--spacing-sm)',
-                  backgroundColor: 'rgba(124, 69, 0, 0.08)',
-                  borderRadius: 'var(--radius)',
-                  fontSize: 'var(--font-size-sm)',
-                  textAlign: 'right',
-                  color: 'var(--color-text)',
-                }}
-              >
-                <div>{item.title}</div>
-                <div style={{ fontSize: '0.85rem', color: '#5F6B72', marginTop: '0.25rem' }}>
-                  {item.status}
+          {futureRights.map((right) => {
+            const taskKey = buildFutureTaskKey(right.id)
+            const isCompleted = Boolean(completedTasks[taskKey])
+            const taskText = `לבדוק את הזכות בתאריך ${right.futureDateText}${
+              right.futureTimeText ? `, בעוד ${right.futureTimeText}` : ''
+            }`
+
+            return (
+              <div key={right.id} className="rights-checklist-group">
+                <div className="rights-checklist-group-header">
+                  <h4>{right.title}</h4>
+                  <span className="rights-checklist-badge rights-checklist-badge-future">
+                    עתידי
+                  </span>
                 </div>
-              </li>
-            ))}
-          </ul>
+
+                <p className="rights-checklist-note">
+                  זכות זו עדיין לא מוצגת כזכות למימוש עכשיו, אך היא קרובה
+                  למימוש לפי הגיל שהוגדר בשאלון.
+                </p>
+
+                <ul className="rights-checklist-list">
+                  <li>
+                    <label className="rights-checklist-item">
+                      <input
+                        type="checkbox"
+                        checked={isCompleted}
+                        disabled={isLoadingTasks}
+                        onChange={() =>
+                          toggleTask({
+                            taskKey,
+                            rightId: right.id,
+                            taskText,
+                            taskType: 'future',
+                          })
+                        }
+                      />
+
+                      <span>{taskText}</span>
+
+                      <strong
+                        className={`rights-checklist-status ${
+                          isCompleted
+                            ? 'rights-checklist-status-done'
+                            : 'rights-checklist-status-pending'
+                        }`}
+                      >
+                        {getTaskStatus(isCompleted)}
+                      </strong>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            )
+          })}
         </div>
-      </div>
-    </aside>
+      )}
+    </section>
   )
 }
 
