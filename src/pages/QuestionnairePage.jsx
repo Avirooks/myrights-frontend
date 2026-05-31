@@ -8,10 +8,8 @@ const specialStatusOptions = [
   { value: 'disabled_idf_family', label: 'בן/בת משפחה של נכה צה״ל' },
   { value: 'bereaved_family', label: 'משפחה שכולה' },
   { value: 'terror_victim', label: 'נפגע/ת פעולות איבה' },
-  { value: 'october_7_survivor', label: 'נפגע/ת או שורד/ת מאירועי 7.10' },
-  { value: 'holocaust_survivor', label: 'שורד/ת שואה' },
-  { value: 'other', label: 'אחר' },
-  { value: 'none', label: 'לא ידוע / לא רלוונטי' },
+   { value: 'holocaust_survivor', label: 'שורד/ת שואה' },
+  { value: 'none', label: ' לא רלוונטי' },
 ]
 
 function calculateAge(birthDate) {
@@ -318,7 +316,7 @@ function QuestionnairePage() {
                         type="text"
                         value={formData.parentName}
                         onChange={handleChange}
-                        placeholder="לדוגמה: דויד כהן"
+                        placeholder="לדוגמה: ישראל ישראל"
                         required
                       />
                     </div>
