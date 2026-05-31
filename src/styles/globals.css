@@ -1558,4 +1558,26 @@ body.accessibility-highlight-links a {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+}.dashboard-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.dashboard-edit-questionnaire-btn {
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .dashboard-summary-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-edit-questionnaire-btn {
+    width: 100%;
+  }
 }

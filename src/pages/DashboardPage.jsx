@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Card from '../components/Card'
 import Button from '../components/Button'
@@ -14,19 +14,62 @@ function getBadgeVariant(progressStatus) {
   return 'info'
 }
 
-function getYesNoLabel(value) {
-  return value ? 'כן' : 'לא'
-}
-
 function getMaritalStatusLabel(status) {
   const statuses = {
     married: 'נשוי/ה',
     widowed: 'אלמן/ה',
     divorced: 'גרוש/ה',
     single: 'רווק/ה',
+    unknown: 'לא ידוע',
   }
 
   return statuses[status] || 'לא צוין'
+}
+
+function getGenderLabel(gender) {
+  const genders = {
+    male: 'זכר',
+    female: 'נקבה',
+    other: 'אחר',
+    prefer_not_to_say: 'מעדיף/ה לא לציין',
+  }
+
+  return genders[gender] || 'לא צוין'
+}
+
+function getSpecialStatusLabel(status) {
+  const statuses = {
+    disabled_idf: 'נכה צה״ל',
+    disabled_idf_family: 'בן/בת משפחה של נכה צה״ל',
+    bereaved_family: 'משפחה שכולה',
+    terror_victim: 'נפגע/ת פעולות איבה',
+    october_7_survivor: 'נפגע/ת או שורד/ת מאירועי 7.10',
+    holocaust_survivor: 'שורד/ת שואה',
+    other: 'אחר',
+    none: 'לא ידוע / לא רלוונטי',
+  }
+
+  return statuses[status] || status
+}
+
+function getSpecialStatusesText(statuses) {
+  if (!Array.isArray(statuses) || statuses.length === 0) {
+    return 'לא ידוע / לא רלוונטי'
+  }
+
+  return statuses.map((status) => getSpecialStatusLabel(status)).join(', ')
+}
+
+function maskIdNumber(idNumber) {
+  if (!idNumber) return 'לא הוזנה'
+
+  const cleanId = String(idNumber)
+
+  if (cleanId.length < 4) {
+    return 'הוזנה'
+  }
+
+  return `******${cleanId.slice(-3)}`
 }
 
 function DashboardPage() {
@@ -37,6 +80,10 @@ function DashboardPage() {
   const navigate = useNavigate()
 
   const hasRights = rightsData.length > 0
+
+  const specialStatusesText = useMemo(() => {
+    return getSpecialStatusesText(latestQuestionnaire?.special_statuses)
+  }, [latestQuestionnaire])
 
   useEffect(() => {
     async function fetchLatestQuestionnaire() {
@@ -61,7 +108,7 @@ function DashboardPage() {
         const { data, error } = await supabase
           .from('questionnaire_answers')
           .select(
-            'id, parent_name, age, marital_status, has_extra_income, needs_daily_help, created_at'
+            'id, parent_name, age, id_number, gender, marital_status, special_statuses, created_at'
           )
           .order('created_at', { ascending: false })
           .limit(1)
@@ -97,7 +144,7 @@ function DashboardPage() {
         links={[
           { label: 'בית', href: '/' },
           { label: 'שאלון', href: '/questionnaire' },
-          { label: 'זכויות מותאמות', href: '/dashboard' },
+          { label: 'זכויות לבדיקה', href: '/dashboard' },
         ]}
       />
 
@@ -112,10 +159,10 @@ function DashboardPage() {
               חזרה לשאלון
             </button>
 
-            <h1>הזכויות המותאמות לפי השאלון</h1>
+            <h1>זכויות לבדיקה לפי השאלון</h1>
 
             <p>
-              להלן רשימת זכויות והטבות שעשויות להתאים לפי הפרטים שמילאתם בשאלון.
+              להלן רשימת זכויות והטבות שכדאי לבדוק לפי הפרטים שמילאתם בשאלון.
               כל זכות כוללת סטטוס, צעד הבא והכוונה ראשונית להמשך טיפול.
             </p>
           </div>
@@ -154,7 +201,7 @@ function DashboardPage() {
                 <div className="dashboard-empty-state">
                   <h2>עדיין לא מולא שאלון</h2>
                   <p>
-                    כדי להציג זכויות מותאמות, יש למלא קודם את שאלון בדיקת
+                    כדי להציג זכויות לבדיקה, יש למלא קודם את שאלון בדיקת
                     הזכויות.
                   </p>
 
@@ -173,17 +220,42 @@ function DashboardPage() {
               <>
                 <Card>
                   <section className="dashboard-questionnaire-summary">
-                    <h2>סיכום השאלון האחרון</h2>
+                    <div className="dashboard-summary-header">
+                      <h2>סיכום השאלון האחרון</h2>
+
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => navigate('/questionnaire?mode=edit')}
+                        className="dashboard-edit-questionnaire-btn"
+                      >
+                        ✎ עדכון שאלון
+                      </Button>
+                    </div>
 
                     <div className="dashboard-right-info">
                       <div>
-                        <span>שם ההורה</span>
+                        <span>שם מלא</span>
                         <strong>{latestQuestionnaire.parent_name}</strong>
                       </div>
 
                       <div>
                         <span>גיל</span>
                         <strong>{latestQuestionnaire.age}</strong>
+                      </div>
+
+                      <div>
+                        <span>תעודת זהות</span>
+                        <strong>
+                          {maskIdNumber(latestQuestionnaire.id_number)}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>מין / מגדר</span>
+                        <strong>
+                          {getGenderLabel(latestQuestionnaire.gender)}
+                        </strong>
                       </div>
 
                       <div>
@@ -196,23 +268,16 @@ function DashboardPage() {
                       </div>
 
                       <div>
-                        <span>הכנסה נוספת</span>
-                        <strong>
-                          {getYesNoLabel(
-                            latestQuestionnaire.has_extra_income
-                          )}
-                        </strong>
-                      </div>
-
-                      <div>
-                        <span>זקוק לעזרה יומיומית</span>
-                        <strong>
-                          {getYesNoLabel(
-                            latestQuestionnaire.needs_daily_help
-                          )}
-                        </strong>
+                        <span>מצבים מיוחדים</span>
+                        <strong>{specialStatusesText}</strong>
                       </div>
                     </div>
+
+                    <p className="dashboard-disclaimer">
+                      הזכויות המוצגות הן זכויות לבדיקה ראשונית לפי פרטי ההורה.
+                      הן אינן מהוות אישור זכאות סופי. מומלץ לבדוק כל זכות מול
+                      הגורם הרשמי.
+                    </p>
                   </section>
                 </Card>
 
@@ -234,7 +299,7 @@ function DashboardPage() {
 
                   <section
                     className="dashboard-rights-list"
-                    aria-label="רשימת זכויות מותאמות"
+                    aria-label="רשימת זכויות לבדיקה"
                   >
                     {hasRights ? (
                       rightsData.map((right) => (
