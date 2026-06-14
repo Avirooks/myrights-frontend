@@ -51,6 +51,17 @@ export default function FeedbackForm() {
 
 return (
   <form onSubmit={handleSubmit}>
+    {!user && (
+  <p className="feedback-login-message">
+    יש להתחבר לפני שליחת משוב
+  </p>
+)}
+
+{status && (
+  <p className="feedback-status" role="status">
+    {status}
+  </p>
+)}
     <h2>נשמח לשמוע מה חשבת</h2>
 
     <label>איך היית מדרג את החוויה שלך באתר?</label>
@@ -97,11 +108,11 @@ return (
       required
     />
 
-    <button type="submit" disabled={isSubmitting}>
-      {isSubmitting ? 'שולח...' : 'שליחת משוב'}
-    </button>
+<button type="submit" disabled={isSubmitting || !user}>
+  {isSubmitting ? 'שולח...' : 'שליחת משוב'}
+</button>
 
-    {status && <p>{status}</p>}
+    
   </form>
 )
 }

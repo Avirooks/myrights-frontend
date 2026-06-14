@@ -1876,4 +1876,105 @@ body.accessibility-highlight-links a {
 
 .feedback-stars .star.active {
   color: #f5b301;
+}.feedback-modal {
+  position: relative;
+  width: min(92vw, 460px);
+  max-height: 95vh;
+  overflow: hidden;
+  padding: 22px;
+  border-radius: 18px;
+  background: white;
+  direction: rtl;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+}
+
+.feedback-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feedback-modal h2 {
+  margin: 0 0 4px;
+  text-align: center;
+}
+
+.feedback-modal label {
+  margin-top: 2px;
+  font-weight: 700;
+}
+
+.feedback-modal select,
+.feedback-modal textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid #cbd5df;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: white;
+}
+
+.feedback-modal textarea {
+  min-height: 85px;
+  max-height: 110px;
+  resize: none;
+}
+
+.feedback-stars {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  direction: ltr;
+}
+
+.feedback-stars .star {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 1.8rem;
+  color: #cbd5df;
+  cursor: pointer;
+}
+
+.feedback-stars .star.active {
+  color: #f5b301;
+}
+
+.feedback-login-message,
+.feedback-status {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.feedback-login-message {
+  color: #7a4b00;
+  background: #fff4d6;
+}
+
+.feedback-modal button[type='submit'] {
+  margin-top: 4px;
+  padding: 10px;
+}
+
+@media (max-height: 650px) {
+  .feedback-modal {
+    padding: 16px;
+  }
+
+  .feedback-modal form {
+    gap: 6px;
+  }
+
+  .feedback-modal textarea {
+    min-height: 60px;
+    max-height: 70px;
+  }
+
+  .feedback-stars .star {
+    font-size: 1.55rem;
+  }
 }

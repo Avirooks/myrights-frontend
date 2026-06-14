@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 import Button from '../components/Button'
 import Card from '../components/Card'
 
 function HomePage() {
   const navigate = useNavigate()
-
+  const { user } = useAuth()
   const features = [
     {
       icon: '📋',
@@ -89,7 +90,7 @@ function HomePage() {
 
             <Button
               variant="primary"
-              onClick={() => navigate('/questionnaire')}
+             onClick={() => navigate(user ? '/questionnaire' : '/login')}
               className="home-hero-cta"
             >
               התחלת בדיקת זכויות אישית
