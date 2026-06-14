@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage'
 import RightDetailsPage from './pages/RightDetailsPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import FeedbackButton from './components/FeedbackButton'
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+
+        <FeedbackButton />
       </BrowserRouter>
     </AuthProvider>
   )
