@@ -254,7 +254,7 @@ src/data/rightsData.js
 
 מאגר הזכויות עצמו מנוהל כיום בקובץ סטטי בצד ה-Frontend בשם `src/data/rightsData.js`, ולא כטבלת Database. החלטה זו נועדה לשמור על מערכת פשוטה, יציבה וברורה במסגרת הפרויקט.
 
-![MyRights ERD](docs/images/myrights-erd.png)
+![MyRights ERD](src\styles\docs\images\MYRIGHTS_ERD.png)
 
 ---
 
