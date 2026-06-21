@@ -10,8 +10,11 @@ function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const [userAlreadyExists, setUserAlreadyExists] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const isStrongPassword = (password) => {
@@ -34,11 +37,12 @@ function RegisterPage() {
     event.preventDefault()
     setErrorMessage('')
     setSuccessMessage('')
+    setUserAlreadyExists(false)
 
     if (password !== confirmPassword) {
-  setErrorMessage('הסיסמה ואימות הסיסמה אינם תואמים.')
-  return
-}
+      setErrorMessage('הסיסמה ואימות הסיסמה אינם תואמים.')
+      return
+    }
 
     if (!isStrongPassword(password)) {
       setErrorMessage(
@@ -62,6 +66,18 @@ function RegisterPage() {
     setLoading(false)
 
     if (error) {
+      const message = error.message?.toLowerCase() || ''
+
+      if (
+        message.includes('already registered') ||
+        message.includes('already exists') ||
+        message.includes('user already')
+      ) {
+        setUserAlreadyExists(true)
+        setErrorMessage('משתמש עם כתובת המייל הזו כבר קיים. ניתן להתחבר במקום להירשם מחדש.')
+        return
+      }
+
       setErrorMessage('לא הצלחנו ליצור משתמש. בדוק את הפרטים ונסה שוב.')
       return
     }
@@ -110,33 +126,66 @@ function RegisterPage() {
 
             <label>
               סיסמה
-              <input
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="לפחות 8 תווים, אותיות, מספר ותו מיוחד"
-                minLength="8"
-                required
-              />
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="לפחות 8 תווים, אותיות, מספר ותו מיוחד"
+                  minLength="8"
+                  required
+                />
+
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword((current) => !current)}
+                  aria-label={showPassword ? 'הסתרת סיסמה' : 'הצגת סיסמה'}
+                >
+                  {showPassword ? '🙈' : '👁'}
+                </button>
+              </div>
             </label>
 
             <label>
-  אימות סיסמה
-  <input
-    type="password"
-    value={confirmPassword}
-    onChange={(event) => setConfirmPassword(event.target.value)}
-    placeholder="הכנס שוב את הסיסמה"
-    minLength="8"
-    required
-  />
-</label>
+              אימות סיסמה
+              <div className="password-input-wrapper">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  placeholder="הכנס שוב את הסיסמה"
+                  minLength="8"
+                  required
+                />
+
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowConfirmPassword((current) => !current)}
+                  aria-label={showConfirmPassword ? 'הסתרת סיסמה' : 'הצגת סיסמה'}
+                >
+                  {showConfirmPassword ? '🙈' : '👁'}
+                </button>
+              </div>
+            </label>
 
             <div className="password-hint">
               הסיסמה חייבת לכלול: לפחות 8 תווים, אות גדולה, אות קטנה, מספר ותו מיוחד.
             </div>
 
-            {errorMessage && <div className="auth-error">{errorMessage}</div>}
+            {errorMessage && (
+              <div className="auth-error">
+                {errorMessage}
+
+                {userAlreadyExists && (
+                  <div className="auth-error-action">
+                    <Link to="/login">מעבר להתחברות</Link>
+                  </div>
+                )}
+              </div>
+            )}
+
             {successMessage && <div className="auth-success">{successMessage}</div>}
 
             <button type="submit" className="primary-button" disabled={loading}>

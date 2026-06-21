@@ -1977,4 +1977,33 @@ body.accessibility-highlight-links a {
   .feedback-stars .star {
     font-size: 1.55rem;
   }
+}.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+  padding-left: 48px;
+}
+
+.password-toggle {
+  position: absolute;
+  left: 10px;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.auth-error-action {
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+.auth-error-action a {
+  color: inherit;
+  text-decoration: underline;
 }
