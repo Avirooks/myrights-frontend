@@ -28,7 +28,7 @@ function LoginPage() {
       return
     }
 
-    navigate('/')
+ navigate('/dashboard')
   }
 
   return (
