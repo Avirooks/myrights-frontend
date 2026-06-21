@@ -28,7 +28,7 @@ function LoginPage() {
       return
     }
 
- navigate('/HomPage/')
+ navigate('/home')
   }
 
   return (
