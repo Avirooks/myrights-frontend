@@ -269,7 +269,7 @@ function QuestionnairePage() {
       <Navbar
         title="MyRights"
         links={[
-       { label: 'בית', href: '/home' }
+       { label: 'בית', href: '/home' },
           { label: 'שאלון', href: '/questionnaire' },
           { label: 'זכויות לבדיקה', href: '/dashboard' },
         ]}

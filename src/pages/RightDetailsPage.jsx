@@ -15,7 +15,7 @@ function RightDetailsPage() {
   const right = rightsData.find((item) => item.id === id)
 
   const navbarLinks = [
-  { label: 'בית', href: '/home' }
+  { label: 'בית', href: '/home' },
     { label: 'שאלון', href: '/questionnaire' },
     { label: 'זכויות מותאמות', href: '/dashboard' },
   ]
