@@ -66,7 +66,7 @@ function Navbar({ title = 'MyRights', links = [] }) {
       <div className="container">
         <div className="navbar-inner compact-navbar">
           <div className="navbar-brand-menu">
-            <Link to="/" className="navbar-brand navbar-brand-link" aria-label="חזרה לדף הבית">
+            <Link to="/home" className="navbar-brand navbar-brand-link" aria-label="חזרה לדף הבית">
   <h1>{title}</h1>
   <p className="navbar-slogan">הדרך הפשוטה לעזור להורים</p>
 </Link>
