@@ -321,7 +321,7 @@ function DashboardPage() {
       <Navbar
         title="MyRights"
         links={[
-          { label: 'בית', href: '/' },
+         { label: 'בית', href: '/home' }
           { label: 'שאלון', href: '/questionnaire' },
           { label: 'זכויות לבדיקה', href: '/dashboard' },
         ]}

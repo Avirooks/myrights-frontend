@@ -14,7 +14,7 @@ function Navbar({ title = 'MyRights', links = [] }) {
   const menuRef = useRef(null)
 
   const defaultLinks = [
-    { label: 'בית', href: '/' },
+  { label: 'בית', href: '/home' }
     { label: 'זכויות מותאמות', href: '/dashboard' },
   ]
 

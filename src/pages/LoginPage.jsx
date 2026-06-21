@@ -8,6 +8,7 @@ function LoginPage() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -55,16 +56,27 @@ function LoginPage() {
               />
             </label>
 
-            <label>
-              סיסמה
-              <input
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="הכנס סיסמה"
-                required
-              />
-            </label>
+         <label>
+  סיסמה
+  <div className="password-input-wrapper">
+    <input
+      type={showPassword ? 'text' : 'password'}
+      value={password}
+      onChange={(event) => setPassword(event.target.value)}
+      placeholder="הכנס סיסמה"
+      required
+    />
+
+    <button
+      type="button"
+      className="password-toggle"
+      onClick={() => setShowPassword((current) => !current)}
+      aria-label={showPassword ? 'הסתרת סיסמה' : 'הצגת סיסמה'}
+    >
+      {showPassword ? '🙈' : '👁'}
+    </button>
+  </div>
+</label>
 
             {errorMessage && <div className="auth-error">{errorMessage}</div>}
 

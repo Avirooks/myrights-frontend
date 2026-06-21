@@ -35,7 +35,7 @@ function HomePage() {
       <Navbar
         title="MyRights"
         links={[
-          { label: 'בית', href: '/' },
+         { label: 'בית', href: '/home' }
           { label: 'שאלון', href: '/questionnaire' },
           { label: 'זכויות מותאמות', href: '/dashboard' }
         ]}
